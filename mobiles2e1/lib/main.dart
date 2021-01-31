@@ -1,4 +1,8 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+
+import 'categoryCard.dart';
 
 void main() {
   runApp(MyApp());
@@ -113,54 +117,99 @@ class MyHomePage extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Container(
-              child: Card(
-                margin: EdgeInsets.symmetric(
-                  horizontal: 20.0,
-                  vertical: 20.0,
+            Column(
+              children: [
+                Container(
+                  child: Card(
+                    margin: EdgeInsets.symmetric(
+                      horizontal: 20.0,
+                      vertical: 20.0,
+                    ),
+                    elevation: 15.0,
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(
+                            top: 10.0,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: <Widget>[
+                              Text('Sun'),
+                              Text('Mon'),
+                              Text('Tue'),
+                              Text('Wed'),
+                              Text('Thur'),
+                              Text('Fri'),
+                              Text('Sat'),
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          height: 10.0,
+                        ),
+                        Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: <Widget>[
+                              for (var i = 0; i < 7; i++) Percent(size: .5),
+                            ]),
+                        SizedBox(
+                          height: 10.0,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: <Widget>[
+                            for (var i = 0; i < 7; i++) Text('1'),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 10.0,
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
-                elevation: 15.0,
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(
-                        top: 10.0,
-                      ),
+              ],
+            ),
+            
+            SingleChildScrollView(
+              child: Column(
+                children: [
+                  Container(
+                    child: Card(
+                      margin: EdgeInsets.all(20),
+                      elevation: 10,
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: <Widget>[
-                          Text('Sun'),
-                          Text('Mon'),
-                          Text('Tue'),
-                          Text('Wed'),
-                          Text('Thur'),
-                          Text('Fri'),
-                          Text('Sat'),
+                        children: [
+                          Expanded(
+                            child: Container(
+                              child: Text(
+                                "Food",
+                                style: TextStyle(fontSize: 20),
+                              ),
+                              padding: EdgeInsets.only(left: 15),
+                            ),
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.arrow_forward),
+                            onPressed: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                // builder: (context)=>_category("Food", "Pizza", 100, 56)
+                                builder: (context) => CategoryCard(
+                                  title: "Food",
+                                  item: "Pizza",
+                                  budget: 1000.0,
+                                  expense: 69.0,
+                                ),
+                              ),
+                            ),
+                          ),
                         ],
                       ),
                     ),
-                    SizedBox(
-                      height: 10.0,
-                    ),
-                    Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: <Widget>[
-                          for (var i = 0; i < 7; i++) Percent(size: .5),
-                        ]),
-                    SizedBox(
-                      height: 10.0,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: <Widget>[
-                        for (var i = 0; i < 7; i++) Text('1'),
-                      ],
-                    ),
-                    SizedBox(
-                      height: 10.0,
-                    ),
-                  ],
-                ),
+                  )
+                ],
               ),
             ),
           ],
