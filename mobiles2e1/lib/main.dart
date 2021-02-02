@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
+import 'budgetDetail.dart';
 import 'categoryCard.dart';
 
 void main() {
@@ -25,10 +26,28 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyHomePage extends StatelessWidget {
-  TextEditingController text = TextEditingController(text: '');
+class MyHomePage extends StatefulWidget {
+  @override
+  _MyHomePageState createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  TextEditingController categoryName = TextEditingController(text: '');
+  TextEditingController categoryBudget = TextEditingController(text: '');
+  List<Budget> _categoryList = [];
 
   @override
+  void _add(String bTitle, int bAmount) {
+    final Budget add = Budget(
+      title: bTitle,
+      amount: bAmount,
+      id: _categoryList.length,
+    );
+    setState(() {
+      _categoryList.add(add);
+    });
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -59,10 +78,10 @@ class MyHomePage extends StatelessWidget {
                                         const Radius.circular(10.0),
                                       ),
                                     ),
-                                    hintText: 'Enter Text to Style',
+                                    hintText: 'Enter Category Title',
                                   ),
                                   keyboardType: TextInputType.text,
-                                  controller: text,
+                                  controller: categoryName,
                                 ),
                               ),
                             ],
@@ -82,10 +101,10 @@ class MyHomePage extends StatelessWidget {
                                         const Radius.circular(10.0),
                                       ),
                                     ),
-                                    hintText: 'Enter Text to Style',
+                                    hintText: 'Enter Budget',
                                   ),
                                   keyboardType: TextInputType.text,
-                                  controller: text,
+                                  controller: categoryBudget,
                                 ),
                               ),
                             ],
@@ -104,7 +123,14 @@ class MyHomePage extends StatelessWidget {
                               ),
                             ),
                             child: FlatButton(
-                                child: Text('ADD'), onPressed: () {}),
+                                child: Text('ADD'),
+                                onPressed: () {
+                                  _add(categoryName.text,
+                                      int.parse(categoryBudget.text));
+                                  categoryName.text = "";
+                                  categoryBudget.text = "";
+                                  Navigator.pop(context);
+                                }),
                           ),
                         )
                       ],
@@ -119,6 +145,15 @@ class MyHomePage extends StatelessWidget {
           children: [
             Column(
               children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    IconButton(icon: Icon(Icons.arrow_back), onPressed: () {}),
+                    Text("02/02/21 - 02/09/21"),
+                    IconButton(
+                        icon: Icon(Icons.arrow_forward), onPressed: () {}),
+                  ],
+                ),
                 Container(
                   child: Card(
                     margin: EdgeInsets.symmetric(
@@ -169,48 +204,8 @@ class MyHomePage extends StatelessWidget {
                     ),
                   ),
                 ),
+                Cards(list: _categoryList),
               ],
-            ),
-            
-            SingleChildScrollView(
-              child: Column(
-                children: [
-                  Container(
-                    child: Card(
-                      margin: EdgeInsets.all(20),
-                      elevation: 10,
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Container(
-                              child: Text(
-                                "Food",
-                                style: TextStyle(fontSize: 20),
-                              ),
-                              padding: EdgeInsets.only(left: 15),
-                            ),
-                          ),
-                          IconButton(
-                            icon: Icon(Icons.arrow_forward),
-                            onPressed: () => Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                // builder: (context)=>_category("Food", "Pizza", 100, 56)
-                                builder: (context) => CategoryCard(
-                                  title: "Food",
-                                  item: "Pizza",
-                                  budget: 1000.0,
-                                  expense: 69.0,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  )
-                ],
-              ),
             ),
           ],
         ),
@@ -244,23 +239,49 @@ class Percent extends StatelessWidget {
 }
 
 class Cards extends StatelessWidget {
-  final String title;
-  final double budget;
-  Cards({this.title, this.budget});
+  final List<Budget> list;
+  Cards({this.list});
   @override
   Widget build(BuildContext context) {
-    return Card(
-      color: Colors.deepOrange[300],
-      margin: EdgeInsets.symmetric(
-        horizontal: 20.0,
-        vertical: 8.0,
-      ),
-      elevation: 10,
-      child: Row(
-        children: [
-          Text(title),
-          Text('$budget'),
-        ],
+    return Container(
+      height: 700.0,
+      child: ListView.builder(
+        itemBuilder: (context, index) {
+          return InkWell(
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                // builder: (context)=>_category("Food", "Pizza", 100, 56)
+                builder: (context) => CategoryCard(
+                  title: "Food",
+                  item: "Pizza",
+                  budget: 1000.0,
+                  expense: 69.0,
+                ),
+              ),
+            ),
+            child: Card(
+              color: Colors.deepOrange[300],
+              margin: EdgeInsets.symmetric(
+                horizontal: 20.0,
+                vertical: 8.0,
+              ),
+              elevation: 10,
+              child: ListTile(
+                title: Text('${list[index].title}'),
+                subtitle: Text('${list[index].amount}'),
+                trailing: IconButton(
+                  color: Colors.red,
+                  icon: Icon(Icons.delete),
+                  onPressed: () {},
+                ),
+              ),
+            ),
+          );
+        },
+        shrinkWrap: true,
+        physics: NeverScrollableScrollPhysics(),
+        itemCount: list.length,
       ),
     );
   }
