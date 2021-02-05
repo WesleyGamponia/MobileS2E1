@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'budgetDetail.dart';
 import 'categoryCard.dart';
@@ -35,18 +36,54 @@ class _MyHomePageState extends State<MyHomePage> {
   TextEditingController categoryName = TextEditingController(text: '');
   TextEditingController categoryBudget = TextEditingController(text: '');
   List<Budget> _categoryList = [];
+  int catID = 1;
 
-  @override
   void _add(String bTitle, int bAmount) {
     final Budget add = Budget(
       title: bTitle,
       amount: bAmount,
-      id: _categoryList.length,
+      id: catID,
     );
     setState(() {
       _categoryList.add(add);
+      catID++;
     });
   }
+
+  void delete(int id){
+    setState(() {
+      _categoryList.removeWhere((index) {
+        return index.id == id;
+      });
+    });
+  }
+  @override
+  
+  // List delete(List<Budget> list){
+  //   List<Budget> list2;
+
+  //   for (var i = 0; i < list.length; i++) {
+  //     if (list[i].id!=list2[i].id){
+  //       list2[i] = list[i];
+  //     }
+  //   }
+  //   return  list2;
+  // }
+
+  // void delete(String search){
+  //   setState(() {
+  //     List<Budget> list = _categoryList;
+
+  //     for (var i = 0; i < _categoryList.length; i++) {
+  //     if(list[i].title!=search){
+  //       list.removeAt(i);
+  //     }
+  //   }
+  //   _categoryList = list;
+  //   });
+    
+  // }
+
 
   Widget build(BuildContext context) {
     return Scaffold(
@@ -103,8 +140,11 @@ class _MyHomePageState extends State<MyHomePage> {
                                     ),
                                     hintText: 'Enter Budget',
                                   ),
-                                  keyboardType: TextInputType.text,
+                                  keyboardType: TextInputType.number,
                                   controller: categoryBudget,
+                                  inputFormatters: <TextInputFormatter>[
+                                    FilteringTextInputFormatter.allow(RegExp(r'[0-9,]')),
+                                  ],
                                 ),
                               ),
                             ],
@@ -204,7 +244,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                   ),
                 ),
-                Cards(list: _categoryList),
+                Cards(list: _categoryList,delete: delete,),
               ],
             ),
           ],
@@ -217,7 +257,6 @@ class _MyHomePageState extends State<MyHomePage> {
 class Percent extends StatelessWidget {
   final double size;
   Percent({this.size});
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -240,7 +279,9 @@ class Percent extends StatelessWidget {
 
 class Cards extends StatelessWidget {
   final List<Budget> list;
-  Cards({this.list});
+  final Function delete;
+  Cards({this.list,this.delete});
+  
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -253,9 +294,9 @@ class Cards extends StatelessWidget {
               MaterialPageRoute(
                 // builder: (context)=>_category("Food", "Pizza", 100, 56)
                 builder: (context) => CategoryCard(
-                  title: "Food",
+                  title: list[index].title,
                   item: "Pizza",
-                  budget: 1000.0,
+                  budget: list[index].amount.toDouble(),
                   expense: 69.0,
                 ),
               ),
@@ -273,7 +314,7 @@ class Cards extends StatelessWidget {
                 trailing: IconButton(
                   color: Colors.red,
                   icon: Icon(Icons.delete),
-                  onPressed: () {},
+                  onPressed: () => delete(list[index].id),
                 ),
               ),
             ),
