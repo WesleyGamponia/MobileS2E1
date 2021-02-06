@@ -38,7 +38,7 @@ class _MyHomePageState extends State<MyHomePage> {
   List<Budget> _categoryList = [];
   int catID = 1;
 
-  void _add(String bTitle, int bAmount) {
+  void _add(String bTitle, double bAmount) {
     final Budget add = Budget(
       title: bTitle,
       amount: bAmount,
@@ -166,7 +166,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                 child: Text('ADD'),
                                 onPressed: () {
                                   _add(categoryName.text,
-                                      int.parse(categoryBudget.text));
+                                      double.parse(categoryBudget.text));
                                   categoryName.text = "";
                                   categoryBudget.text = "";
                                   Navigator.pop(context);
@@ -292,12 +292,9 @@ class Cards extends StatelessWidget {
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(
-                // builder: (context)=>_category("Food", "Pizza", 100, 56)
                 builder: (context) => CategoryCard(
                   title: list[index].title,
-                  item: "Pizza",
-                  budget: list[index].amount.toDouble(),
-                  expense: 69.0,
+                  budget: list[index].amount,
                 ),
               ),
             ),

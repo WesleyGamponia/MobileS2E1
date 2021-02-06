@@ -2,24 +2,41 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
+import 'budgetDetail.dart';
+
 class CategoryCard extends StatefulWidget {
   final String title;
-  final String item;
   final double budget;
-  final double expense;
-  CategoryCard({this.title, this.item, this.budget, this.expense});
+  CategoryCard({this.title, this.budget});
   @override
   _CategoryCardState createState() => _CategoryCardState();
 }
 
 class _CategoryCardState extends State<CategoryCard> {
-  TextEditingController text = TextEditingController(text: '');
+  TextEditingController itemTitle = TextEditingController(text: '');
+  TextEditingController itemDate = TextEditingController(text: '');
+  TextEditingController itemCost = TextEditingController(text: '');
+  String day;
+  List<Item> _itemList = [];
+
+  void _add(String iTitle, double iAmount, String iDate) {
+    final Item add = Item(
+      title: iTitle,
+      amount: iAmount,
+      date: iDate,
+      id: _itemList.length,
+    );
+    setState(() {
+      _itemList.add(add);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
-          actions: <Widget>[
+        actions: <Widget>[
           IconButton(
               icon: Icon(Icons.add),
               onPressed: () {
@@ -34,9 +51,9 @@ class _CategoryCardState extends State<CategoryCard> {
                           padding: const EdgeInsets.all(20.0),
                           child: Row(
                             children: [
-                              Container(width:75,child: Text("Title: ")),
+                              Container(width: 75, child: Text("Title: ")),
                               Container(
-                                width: 275,
+                                width: 200,
                                 child: TextField(
                                   decoration: InputDecoration(
                                     border: OutlineInputBorder(
@@ -47,19 +64,20 @@ class _CategoryCardState extends State<CategoryCard> {
                                     hintText: 'Enter Text to Style',
                                   ),
                                   keyboardType: TextInputType.text,
-                                  controller: text,
+                                  controller: itemTitle,
                                 ),
                               ),
                             ],
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.only(left:20,right:20,bottom:20),
+                          padding: const EdgeInsets.only(
+                              left: 20, right: 20, bottom: 20),
                           child: Row(
                             children: [
-                              Container(width:75,child: Text("Budget: ")),
+                              Container(width: 75, child: Text("Cost: ")),
                               Container(
-                                width: 275,
+                                width: 200,
                                 child: TextField(
                                   decoration: InputDecoration(
                                     border: OutlineInputBorder(
@@ -70,19 +88,20 @@ class _CategoryCardState extends State<CategoryCard> {
                                     hintText: 'Enter Text to Style',
                                   ),
                                   keyboardType: TextInputType.text,
-                                  controller: text,
+                                  controller: itemCost,
                                 ),
                               ),
                             ],
                           ),
                         ),
-                         Padding(
-                          padding: const EdgeInsets.only(left:20,right:20,bottom:20),
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              left: 20, right: 20, bottom: 20),
                           child: Row(
                             children: [
-                              Container(width:75,child: Text("Date: ")),
+                              Container(width: 75, child: Text("Date: ")),
                               Container(
-                                width: 275,
+                                width: 200,
                                 child: TextField(
                                   decoration: InputDecoration(
                                     border: OutlineInputBorder(
@@ -93,14 +112,14 @@ class _CategoryCardState extends State<CategoryCard> {
                                     hintText: 'Enter Text to Style',
                                   ),
                                   keyboardType: TextInputType.text,
-                                  controller: text,
+                                  controller: itemDate,
                                 ),
                               ),
                             ],
                           ),
                         ),
                         SizedBox(
-                          height: 30,
+                          height: 10,
                         ),
                         Padding(
                           padding: const EdgeInsets.only(left: 250.0),
@@ -112,7 +131,17 @@ class _CategoryCardState extends State<CategoryCard> {
                               ),
                             ),
                             child: FlatButton(
-                                child: Text('ADD'), onPressed: () {}),
+                                child: Text('ADD'),
+                                onPressed: () {
+                                  _add(
+                                      itemTitle.text,
+                                      double.parse(itemCost.text),
+                                      itemDate.text);
+                                  itemTitle.text = "";
+                                  itemCost.text = "";
+                                  itemDate.text = "";
+                                  Navigator.pop(context);
+                                }),
                           ),
                         )
                       ],
@@ -123,44 +152,13 @@ class _CategoryCardState extends State<CategoryCard> {
         ],
       ),
       body: Center(
-        child: Column(
-          children: [
-            _percentage(widget.budget, widget.expense),
-            Expanded(
-              child: ListView.builder(
-                itemCount: 1,
-                itemBuilder: (BuildContext context, int position) {
-                  return Container(
-                    height: 50,
-                    child: Card(
-                      margin: EdgeInsets.only(right: 10),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.only(left:10),
-                              child: Text(
-                                widget.title,
-                                style: TextStyle(fontSize: 20),
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(right:10,top:5),
-                            child: Column(children: [
-                              Expanded(child: Text("6/9/420")),
-                              Expanded(child: Text("\$420.69")),
-                            ]),
-                          ),
-                        ],
-                      ),
-                    ),
-                    padding: EdgeInsets.only(left: 15),
-                  );
-                },
-              ),
-            ),
-          ],
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              _percentage(widget.budget, 1),
+              Cards(list: _itemList),
+            ],
+          ),
         ),
       ),
     );
@@ -298,6 +296,40 @@ class _PercentageCircleState extends State<PercentageCircle> {
             ),
           );
         },
+      ),
+    );
+  }
+}
+
+class Cards extends StatelessWidget {
+  final List<Item> list;
+  Cards({this.list});
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 700.0,
+      child: ListView.builder(
+        itemBuilder: (context, index) {
+          return InkWell(
+            onLongPress: () {},
+            child: Card(
+              color: Colors.deepOrange[300],
+              margin: EdgeInsets.symmetric(
+                horizontal: 20.0,
+                vertical: 8.0,
+              ),
+              elevation: 10,
+              child: ListTile(
+                title: Text('${list[index].title}'),
+                subtitle: Text('${list[index].date}'),
+                trailing: Text('${list[index].amount}'),
+              ),
+            ),
+          );
+        },
+        shrinkWrap: true,
+        physics: NeverScrollableScrollPhysics(),
+        itemCount: list.length,
       ),
     );
   }
