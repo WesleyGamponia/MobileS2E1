@@ -36,8 +36,7 @@ class _MyHomePageState extends State<MyHomePage> {
   TextEditingController categoryBudget = TextEditingController(text: '');
   List<Budget> _categoryList = [];
 
-  @override
-  void _add(String bTitle, int bAmount) {
+  void _add(String bTitle, double bAmount) {
     final Budget add = Budget(
       title: bTitle,
       amount: bAmount,
@@ -47,8 +46,9 @@ class _MyHomePageState extends State<MyHomePage> {
       _categoryList.add(add);
     });
   }
-
-  Widget build(BuildContext context) {
+  
+  @override
+    Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Budget Planning'),
@@ -126,7 +126,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                 child: Text('ADD'),
                                 onPressed: () {
                                   _add(categoryName.text,
-                                      int.parse(categoryBudget.text));
+                                      double.parse(categoryBudget.text));
                                   categoryName.text = "";
                                   categoryBudget.text = "";
                                   Navigator.pop(context);
@@ -251,12 +251,9 @@ class Cards extends StatelessWidget {
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(
-                // builder: (context)=>_category("Food", "Pizza", 100, 56)
                 builder: (context) => CategoryCard(
-                  title: "Food",
-                  item: "Pizza",
-                  budget: 1000.0,
-                  expense: 69.0,
+                  title: list[index].title,
+                  budget: list[index].amount,
                 ),
               ),
             ),
