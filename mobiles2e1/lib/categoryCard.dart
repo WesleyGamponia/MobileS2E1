@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:mobiles2e1/itemCard.dart';
 
 import 'budgetDetail.dart';
 
@@ -349,7 +350,12 @@ class Cards extends StatelessWidget {
       child: ListView.builder(
         itemBuilder: (context, index) {
           return InkWell(
-            onLongPress: () {},
+            onTap: () => Navigator.push(
+              context, 
+              MaterialPageRoute(
+                builder: (context)=>ItemCard(
+                  title: list[index].title,
+                ))),
             child: Card(
               color: Colors.deepOrange[300],
               margin: EdgeInsets.symmetric(
