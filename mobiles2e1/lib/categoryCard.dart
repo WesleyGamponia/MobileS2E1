@@ -34,7 +34,6 @@ class _CategoryCardState extends State<CategoryCard> {
     });
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,7 +64,7 @@ class _CategoryCardState extends State<CategoryCard> {
                                         const Radius.circular(10.0),
                                       ),
                                     ),
-                                    hintText: 'Enter Text to Style',
+                                    hintText: 'Enter Expense Title',
                                   ),
                                   keyboardType: TextInputType.text,
                                   controller: itemTitle,
@@ -89,9 +88,9 @@ class _CategoryCardState extends State<CategoryCard> {
                                         const Radius.circular(10.0),
                                       ),
                                     ),
-                                    hintText: 'Enter Text to Style',
+                                    hintText: 'Enter Expense Cost',
                                   ),
-                                  keyboardType: TextInputType.text,
+                                  keyboardType: TextInputType.number,
                                   controller: itemCost,
                                 ),
                               ),
@@ -113,7 +112,7 @@ class _CategoryCardState extends State<CategoryCard> {
                                         const Radius.circular(10.0),
                                       ),
                                     ),
-                                    hintText: 'Enter Text to Style',
+                                    hintText: 'Enter Expense Title',
                                   ),
                                   keyboardType: TextInputType.text,
                                   controller: itemDate,
@@ -145,6 +144,41 @@ class _CategoryCardState extends State<CategoryCard> {
                                   itemCost.text = "";
                                   itemDate.text = "";
                                   Navigator.pop(context);
+                                  if (expense > widget.budget) {
+                                    showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return AlertDialog(
+                                            title: Text('Error'),
+                                            content:
+                                                Text('You are way over budget'),
+                                            actions: [
+                                              FlatButton(
+                                                  onPressed: () {
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                  child: Text('Ok'))
+                                            ],
+                                          );
+                                        });
+                                  }else if(expense > widget.budget*.9){
+                                    showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return AlertDialog(
+                                            title: Text('Warning'),
+                                            content:
+                                                Text('Budget is almost out '),
+                                            actions: [
+                                              FlatButton(
+                                                  onPressed: () {
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                  child: Text('Ok'))
+                                            ],
+                                          );
+                                        });
+                                  }
                                 }),
                           ),
                         )
