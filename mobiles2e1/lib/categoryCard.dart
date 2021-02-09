@@ -18,18 +18,22 @@ class _CategoryCardState extends State<CategoryCard> {
   TextEditingController itemCost = TextEditingController(text: '');
   String day;
   List<Item> _itemList = [];
+  int itemID = 1;
+  double expense = 0;
 
   void _add(String iTitle, double iAmount, String iDate) {
     final Item add = Item(
       title: iTitle,
       amount: iAmount,
       date: iDate,
-      id: _itemList.length,
+      id: itemID,
     );
     setState(() {
+      expense += iAmount;
       _itemList.add(add);
     });
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -155,7 +159,7 @@ class _CategoryCardState extends State<CategoryCard> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              _percentage(widget.budget, 1),
+              _percentage(widget.budget, expense),
               Cards(list: _itemList),
             ],
           ),
@@ -177,7 +181,7 @@ class _CategoryCardState extends State<CategoryCard> {
           tween: Tween(begin: 0.0, end: (expense / budget)),
           duration: Duration(seconds: 1),
           builder: (context, value, child) {
-            double percentage = value * 100;
+            double percentage = expense;
             return Stack(
               children: [
                 RotationTransition(
