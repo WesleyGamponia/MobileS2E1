@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:mobiles2e1/itemCard.dart';
 
 import 'budgetDetail.dart';
@@ -21,6 +22,7 @@ class _CategoryCardState extends State<CategoryCard> {
   List<Item> _itemList = [];
   int itemID = 1;
   double expense = 0;
+  DateTime _date;
 
   void _add(String iTitle, double iAmount, String iDate) {
     final Item add = Item(
@@ -32,6 +34,19 @@ class _CategoryCardState extends State<CategoryCard> {
     setState(() {
       expense += iAmount;
       _itemList.add(add);
+    });
+  }
+
+  void _presentDatePicker() {
+    showDatePicker(
+            context: context,
+            initialDate: DateTime.now(),
+            firstDate: DateTime(2019),
+            lastDate: DateTime.now())
+        .then((pickedDate) {
+      setState(() {
+        _date = pickedDate;
+      });
     });
   }
 
@@ -104,21 +119,16 @@ class _CategoryCardState extends State<CategoryCard> {
                           child: Row(
                             children: [
                               Container(width: 75, child: Text("Date: ")),
-                              Container(
-                                width: 200,
-                                child: TextField(
-                                  decoration: InputDecoration(
-                                    border: OutlineInputBorder(
-                                      borderRadius: const BorderRadius.all(
-                                        const Radius.circular(10.0),
-                                      ),
-                                    ),
-                                    hintText: 'Enter Expense Title',
-                                  ),
-                                  keyboardType: TextInputType.text,
-                                  controller: itemDate,
-                                ),
-                              ),
+                              Expanded(
+                        child: Text(
+                          _date == null
+                              ? 'No Date Chosen'
+                              : DateFormat.yMMMMd().format(_date),
+                        ),
+                      ),
+                              FlatButton(
+                                  onPressed: _presentDatePicker,
+                                  child: Text('Add Date'))
                             ],
                           ),
                         ),
@@ -162,7 +172,7 @@ class _CategoryCardState extends State<CategoryCard> {
                                             ],
                                           );
                                         });
-                                  }else if(expense > widget.budget*.9){
+                                  } else if (expense > widget.budget * .9) {
                                     showDialog(
                                         context: context,
                                         builder: (BuildContext context) {
@@ -351,11 +361,11 @@ class Cards extends StatelessWidget {
         itemBuilder: (context, index) {
           return InkWell(
             onTap: () => Navigator.push(
-              context, 
-              MaterialPageRoute(
-                builder: (context)=>ItemCard(
-                  title: list[index].title,
-                ))),
+                context,
+                MaterialPageRoute(
+                    builder: (context) => ItemCard(
+                          title: list[index].title,
+                        ))),
             child: Card(
               color: Colors.deepOrange[300],
               margin: EdgeInsets.symmetric(

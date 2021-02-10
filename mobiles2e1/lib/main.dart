@@ -59,31 +59,6 @@ class _MyHomePageState extends State<MyHomePage> {
   }
   @override
   
-  // List delete(List<Budget> list){
-  //   List<Budget> list2;
-
-  //   for (var i = 0; i < list.length; i++) {
-  //     if (list[i].id!=list2[i].id){
-  //       list2[i] = list[i];
-  //     }
-  //   }
-  //   return  list2;
-  // }
-
-  // void delete(String search){
-  //   setState(() {
-  //     List<Budget> list = _categoryList;
-
-  //     for (var i = 0; i < _categoryList.length; i++) {
-  //     if(list[i].title!=search){
-  //       list.removeAt(i);
-  //     }
-  //   }
-  //   _categoryList = list;
-  //   });
-    
-  // }
-
 
   Widget build(BuildContext context) {
     return Scaffold(
