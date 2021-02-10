@@ -37,17 +37,18 @@ class _CategoryCardState extends State<CategoryCard> {
     });
   }
 
-  void _presentDatePicker() {
-    showDatePicker(
-            context: context,
-            initialDate: DateTime.now(),
-            firstDate: DateTime(2019),
-            lastDate: DateTime.now())
-        .then((pickedDate) {
+  _selectDate(BuildContext context) async {
+    final DateTime picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime.now(),
+    );
+    if (picked != null)
       setState(() {
-        _date = pickedDate;
+        itemDate.text = DateFormat.yMMMMd().format(picked);
+        day = DateFormat('EEEE').format(picked);
       });
-    });
   }
   //
 
@@ -120,16 +121,36 @@ class _CategoryCardState extends State<CategoryCard> {
                           child: Row(
                             children: [
                               Container(width: 75, child: Text("Date: ")),
-                              Expanded(
-                        child: Text(
-                          _date == null
-                              ? 'No Date Chosen'
-                              : DateFormat.yMMMMd().format(_date),
-                        ),
-                      ),
-                              FlatButton(
-                                  onPressed: _presentDatePicker,
-                                  child: Text('Add Date'))
+                              Container(
+                                width: 150,
+                                child: TextField(
+                                  decoration: InputDecoration(
+                                    border: OutlineInputBorder(
+                                      borderRadius: const BorderRadius.all(
+                                        const Radius.circular(10.0),
+                                      ),
+                                    ),
+                                    hintText: 'No Choosen Date',
+                                  ),
+                                  keyboardType: TextInputType.number,
+                                  controller: itemDate,
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 8.0),
+                                child: Container(
+                                  width: 50,
+                                  decoration: BoxDecoration(
+                                    border: Border.all(),
+                                    borderRadius: const BorderRadius.all(
+                                      const Radius.circular(10.0),
+                                    ),
+                                  ),
+                                  child: IconButton(
+                                      icon: Icon(Icons.calendar_today),
+                                      onPressed: () => _selectDate(context)),
+                                ),
+                              ),
                             ],
                           ),
                         ),
@@ -206,7 +227,7 @@ class _CategoryCardState extends State<CategoryCard> {
           child: Column(
             children: [
               _percentage(widget.budget, expense),
-              Cards(list: _itemList),
+              Cards(list: _itemList, date: _selectDate,),
             ],
           ),
         ),
@@ -353,7 +374,8 @@ class _PercentageCircleState extends State<PercentageCircle> {
 
 class Cards extends StatelessWidget {
   final List<Item> list;
-  Cards({this.list});
+  final Function date;
+  Cards({this.list, this.date});
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -361,12 +383,111 @@ class Cards extends StatelessWidget {
       child: ListView.builder(
         itemBuilder: (context, index) {
           return InkWell(
-            onTap: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => ItemCard(
-                          title: list[index].title,
-                        ))),
+            onTap: () {
+              showModalBottomSheet(
+                  context: context,
+                  builder: (context) => Container(
+                        color: Color.fromRGBO(255, 203, 164, 1),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(20.0),
+                              child: Row(
+                                children: [
+                                  Container(width: 75, child: Text("Title: ")),
+                                  Container(
+                                    width: 200,
+                                    child: TextField(
+                                      decoration: InputDecoration(
+                                        border: OutlineInputBorder(
+                                          borderRadius: const BorderRadius.all(
+                                            const Radius.circular(10.0),
+                                          ),
+                                        ),
+                                        hintText: '${list[index].title}',
+                                      ),
+                                      keyboardType: TextInputType.text,
+                                      // controller: itemTitle,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Padding(
+                          padding: const EdgeInsets.only(
+                              left: 20, right: 20, bottom: 20),
+                          child: Row(
+                            children: [
+                              Container(width: 75, child: Text("Cost: ")),
+                              Container(
+                                width: 200,
+                                child: TextField(
+                                  decoration: InputDecoration(
+                                    border: OutlineInputBorder(
+                                      borderRadius: const BorderRadius.all(
+                                        const Radius.circular(10.0),
+                                      ),
+                                    ),
+                                    hintText: '${list[index].amount}',
+                                  ),
+                                  keyboardType: TextInputType.number,
+                                  // controller: itemCost,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  left: 20, right: 20, bottom: 20),
+                              child: Row(
+                                children: [
+                                  Container(width: 75, child: Text("Date: ")),
+                                  Container(
+                                    width: 150,
+                                    child: TextField(
+                                      decoration: InputDecoration(
+                                        border: OutlineInputBorder(
+                                          borderRadius: const BorderRadius.all(
+                                            const Radius.circular(10.0),
+                                          ),
+                                        ),
+                                        hintText: '${list[index].date}',
+                                      ),
+                                      keyboardType: TextInputType.number,
+                                      //controller: itemDate,
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 8.0),
+                                    child: Container(
+                                      width: 50,
+                                      decoration: BoxDecoration(
+                                        border: Border.all(),
+                                        borderRadius: const BorderRadius.all(
+                                          const Radius.circular(10.0),
+                                        ),
+                                      ),
+                                      child: IconButton(
+                                          icon: Icon(Icons.calendar_today),
+                                          onPressed: () =>
+                                              date(context)),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ));
+            },
+            // => Navigator.push(
+            //     context,
+            //     MaterialPageRoute(
+            //         builder: (context) => ItemCard(
+            //               title: list[index].title,
+            //             ))),
             child: Card(
               color: Colors.deepOrange[300],
               margin: EdgeInsets.symmetric(
