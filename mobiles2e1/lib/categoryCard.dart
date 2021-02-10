@@ -22,7 +22,7 @@ class _CategoryCardState extends State<CategoryCard> {
   List<Item> _itemList = [];
   int itemID = 1;
   double expense = 0;
-  DateTime _date;
+  // DateTime _date;
 
   void _add(String iTitle, double iAmount, String iDate) {
     final Item add = Item(
@@ -50,7 +50,6 @@ class _CategoryCardState extends State<CategoryCard> {
         day = DateFormat('EEEE').format(picked);
       });
   }
-  //
 
   @override
   Widget build(BuildContext context) {
@@ -72,7 +71,7 @@ class _CategoryCardState extends State<CategoryCard> {
                           padding: const EdgeInsets.all(20.0),
                           child: Row(
                             children: [
-                              Container(width: 75, child: Text("Title: ")),
+                              Container(width: 50, child: Text("Title: ")),
                               Container(
                                 width: 200,
                                 child: TextField(
@@ -96,7 +95,7 @@ class _CategoryCardState extends State<CategoryCard> {
                               left: 20, right: 20, bottom: 20),
                           child: Row(
                             children: [
-                              Container(width: 75, child: Text("Cost: ")),
+                              Container(width: 50, child: Text("Cost: ")),
                               Container(
                                 width: 200,
                                 child: TextField(
@@ -120,7 +119,7 @@ class _CategoryCardState extends State<CategoryCard> {
                               left: 20, right: 20, bottom: 20),
                           child: Row(
                             children: [
-                              Container(width: 75, child: Text("Date: ")),
+                              Container(width: 50, child: Text("Date: ")),
                               Container(
                                 width: 150,
                                 child: TextField(
