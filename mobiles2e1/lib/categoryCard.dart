@@ -49,6 +49,7 @@ class _CategoryCardState extends State<CategoryCard> {
       });
     });
   }
+  //
 
   @override
   Widget build(BuildContext context) {
