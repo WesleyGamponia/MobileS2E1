@@ -2,7 +2,9 @@ import 'package:sqflite/sqflite.dart';
 import 'package:sqflite/sqlite_api.dart';
 import 'package:path/path.dart';
 
+import 'models/budgetDetail.dart';
 class DBProvider {
+  
   DBProvider._();
   static final DBProvider db = DBProvider._();
   static Database _database;
@@ -20,17 +22,17 @@ class DBProvider {
       onCreate: (db, version) async {
         await db.execute('''
           CREATE TABLE item(
-            `itemID` int PRIMARY KEY AUTO_INCREMENT,
+            `id` int PRIMARY KEY AUTO_INCREMENT,
             `categoryID` int,
-            `itemName` varchar(64),
-            `expense` double,
+            `title` varchar(64),
+            `amount` double,
             `date` date
           );
 
           CREATE TABLE category(
             `categoryID` int PRIMARY KEY AUTO_INCREMENT,
             `title` varchar(64),
-            `budget` double,
+            `amount` double,
           );
           
           ''');
@@ -39,14 +41,14 @@ class DBProvider {
     );
   }
 
-  newItem(newItem) async {
+  newItem(Item newItem) async {
     final db = await database;
 
     var res = await db.rawInsert(
       '''
         INSERT INTO item(itemID, categoryID, itemName, expense, date) VALUES(?,?,?,?,?);
       ''',
-      [newItem.itemID,newItem.categoryID,newItem.itemName,newItem.expense,newItem.date],
+      [newItem.categoryID,newItem.title,newItem.amount,newItem.date],
     );
     return res;
   }
@@ -55,6 +57,29 @@ class DBProvider {
     final db= await database;
 
     var res = await db.query("item");
+    if(res.length == 0){
+      return null;
+    }else {
+      var resMap=res[0];
+      return resMap.isNotEmpty ? resMap : Null;
+    }
+  }
+  newCategory(Budget newCategory) async {
+    final db = await database;
+
+    var res = await db.rawInsert(
+      '''
+        INSERT INTO category(categoryID, amount, date) VALUES(?,?,?);
+      ''',
+      //[newCategory.id,newCategory.title,newCategory.amount],
+    );
+    return res;
+  }
+
+  Future<dynamic> getCategory()async{
+    final db= await database;
+
+    var res = await db.query("category");
     if(res.length == 0){
       return null;
     }else {
