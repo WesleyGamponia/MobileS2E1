@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:mobiles2e1/Database.dart';
@@ -116,6 +117,10 @@ class _CategoryCardState extends State<CategoryCard> {
                                   hintText: 'Enter Expense Cost',
                                 ),
                                 keyboardType: TextInputType.number,
+                                inputFormatters: <TextInputFormatter>[
+                                    FilteringTextInputFormatter.allow(
+                                        RegExp(r'[0-9,]')),
+                                  ],
                                 controller: itemCost,
                               ),
                             ),
@@ -139,7 +144,7 @@ class _CategoryCardState extends State<CategoryCard> {
                                   ),
                                   hintText: 'No Choosen Date',
                                 ),
-                                keyboardType: TextInputType.number,
+                                enabled: false,
                                 controller: itemDate,
                               ),
                             ),
@@ -194,9 +199,9 @@ class _CategoryCardState extends State<CategoryCard> {
                               //     itemTitle.text,
                               //     double.parse(itemCost.text),
                               //     itemDate.text);
-                              // itemTitle.text = "";
-                              // itemCost.text = "";
-                              // itemDate.text = "";
+                              itemTitle.text = "";
+                              itemCost.text = "";
+                              itemDate.text = "";
                               Navigator.pop(context);
                               if (expense > widget.budget) {
                                 showDialog(

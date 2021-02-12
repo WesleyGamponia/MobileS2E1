@@ -158,6 +158,8 @@ class _MyHomePageState extends State<MyHomePage> {
                                           AddCategory(storedCategory),
                                         ),
                                       );
+                                  categoryBudget.text = '';
+                                  categoryName.text = '';
                                   Navigator.pop(context);
                                 }
                                 ),
@@ -289,6 +291,7 @@ class CategoryList extends StatelessWidget {
             scrollDirection: Axis.vertical,
             shrinkWrap: true,
             padding: EdgeInsets.all(16),
+            physics: NeverScrollableScrollPhysics(),
             itemCount: categoryList.length,
             itemBuilder: (context, index) {
               return InkWell(

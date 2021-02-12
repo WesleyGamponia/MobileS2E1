@@ -15,6 +15,17 @@ class Cards extends StatefulWidget {
 }
 
 class _CardsState extends State<Cards> {
+  TextEditingController itemTitle = TextEditingController(text: '');
+  TextEditingController itemCost = TextEditingController(text: '');
+
+  // void _change(String iTitle, double iAmount, Item index) {
+  //   index.title = iTitle;
+
+  //   setState(() {
+  //     expense += iAmount;
+  //     _itemList.add(add);
+  //   });
+  // }
   @override
   @override
   Widget build(BuildContext context) {
