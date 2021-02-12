@@ -1,29 +1,50 @@
-import 'package:mobiles2e1/events/event.dart';
+import 'package:mobiles2e1/events/delete_item.dart';
+import 'package:mobiles2e1/events/item_event.dart';
+import 'package:mobiles2e1/events/new_item.dart';
+import 'package:mobiles2e1/events/set_items.dart';
+import 'package:mobiles2e1/events/update_item.dart';
 import 'package:mobiles2e1/models/budgetDetail.dart';
 
 import 'package:bloc/bloc.dart';
 
-class ItemBloc extends Bloc<TrackerEvent, List<Item>> {
+class ItemBloc extends Bloc<ItemEvent, List<Item>> {
   @override
   List<Item> get initialState => List<Item>();
   @override
-  Stream<List<Item>> mapEventToState(TrackerEvent event) async* {
-    switch (event.eventType) {
-      case EventType.addItem:
-        List<Item> newState = List.from(state);
-        if (event.item != null) {
-          newState.add(event.item);
-        }
-        yield newState;
-        break;
-      case EventType.delItem:
-        List<Item> newState = List.from(state);
-        print(newState.length);
-        newState.removeAt(event.itemIndex);
-        yield newState;
-        break;
-      default:
-        throw Exception('Event not found $event');
+  Stream<List<Item>> mapEventToState(ItemEvent event) async* {
+    if (event is SetItems) {
+      yield event.itemList;
+    } else if (event is AddItem) {
+      List<Item> newState = List.from(state);
+      if (event.newItem != null) {
+        newState.add(event.newItem);
+      }
+      yield newState;
+    } else if (event is DeleteItem) {
+      List<Item> newState = List.from(state);
+      newState.removeAt(event.itemIndex);
+      yield newState;
+    } else if (event is UpdateItem) {
+      List<Item> newState = List.from(state);
+      newState[event.itemIndex] = event.newItem;
+      yield newState;
     }
+    // switch (event.eventType) {
+    //   case EventType.addItem:
+    //     List<Item> newState = List.from(state);
+    //     if (event.item != null) {
+    //       newState.add(event.item);
+    //     }
+    //     yield newState;
+    //     break;
+    //   case EventType.delItem:
+    //     List<Item> newState = List.from(state);
+    //     print(newState.length);
+    //     newState.removeAt(event.itemIndex);
+    //     yield newState;
+    //     break;
+    //   default:
+    //     throw Exception('Event not found $event');
+    // }
   }
 }

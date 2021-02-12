@@ -1,31 +1,36 @@
-
 import 'package:mobiles2e1/models/budgetDetail.dart';
 
-enum EventType {addCategory,delCategory, addItem, delItem}
+enum EventType { addCategory, delCategory, addItem, delItem }
 
-class TrackerEvent {
+class CategoryEvent {
   Budget category;
-  Item item;
-
   int catIndex;
-  int itemIndex;
   EventType eventType;
 
-  TrackerEvent.addCategory(Budget category){
+
+  CategoryEvent.addCategory(Budget category) {
     this.eventType = EventType.addCategory;
     this.category = category;
   }
-  TrackerEvent.delCategory(int index){
+  CategoryEvent.delCategory(int index) {
     this.eventType = EventType.delCategory;
     this.catIndex = index;
   }
-  TrackerEvent.addItem(Item category){
+}
+
+class ItemEvent {
+  Item item;
+  int itemIndex;
+  EventType eventType;
+
+  ItemEvent.addItem(Item item) {
     this.eventType = EventType.addItem;
     this.item = item;
   }
-  TrackerEvent.delItem(int index){
+  ItemEvent.delItem(int index) {
     this.eventType = EventType.delItem;
     this.itemIndex = index;
   }
-
 }
+
+abstract class TrackerEvent{}
