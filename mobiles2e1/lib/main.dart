@@ -1,19 +1,15 @@
-import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mobiles2e1/Database.dart';
 import 'package:mobiles2e1/bloc/item_bloc.dart';
 import 'package:mobiles2e1/bloc/item_bloc_delegate.dart';
-
+import 'package:mobiles2e1/events/new_category.dart';
+import 'package:mobiles2e1/events/set_categories.dart';
 import 'bloc/budget_bloc.dart';
 import 'bloc/budget_bloc_delegate.dart';
 import 'categoryCard.dart';
-
-import 'package:sqflite/sqflite.dart';
-import 'package:sqflite/sqlite_api.dart';
-
-import 'events/event.dart';
 import 'models/budgetDetail.dart';
 
 void main() {
@@ -61,29 +57,14 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   TextEditingController categoryName = TextEditingController(text: '');
   TextEditingController categoryBudget = TextEditingController(text: '');
-  List<Budget> _categoryList = [];
   int catID = 1;
-
-  // void _add(String bTitle, double bAmount) {
-  //   final Budget add = Budget(
-  //     title: bTitle,
-  //     amount: bAmount,
-  //     id: catID,
-  //   );
-  //   setState(() {
-  //     _categoryList.add(add);
-  //     catID++;
-  //   });
-  // }
-
-  // void delete(int id) {
-  //   setState(() {
-  //     _categoryList.removeWhere((index) {
-  //       return index.id == id;
-  //     });
-  //   });
-  // }
-
+  @override
+  void initState() {
+    super.initState();
+    DBProvider.db.getCategory().then((categoryList) =>
+        BlocProvider.of<CategoryBloc>(context)
+            .add(SetCategories(categoryList)));
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -166,24 +147,19 @@ class _MyHomePageState extends State<MyHomePage> {
                             child: FlatButton(
                                 child: Text('ADD'),
                                 onPressed: () {
-                                  BlocProvider.of<CategoryBloc>(context).add(
-                                    TrackerEvent.addCategory(
-                                      Budget(
-                                        title: categoryName.text,
-                                        amount:
-                                            double.parse(categoryBudget.text),
-                                      ),
-                                    ),
+                                  Budget category = Budget(
+                                    title: categoryName.text,
+                                    amount: double.parse(categoryBudget.text),
                                   );
+                                  DBProvider.db.insertCategory(category).then(
+                                        (storedCategory) =>
+                                            BlocProvider.of<CategoryBloc>(context)
+                                                .add(
+                                          AddCategory(storedCategory),
+                                        ),
+                                      );
                                   Navigator.pop(context);
                                 }
-                                // onPressed: () {
-                                //   _add(categoryName.text,
-                                //       double.parse(categoryBudget.text));
-                                //   categoryName.text = "";
-                                //   categoryBudget.text = "";
-                                //   Navigator.pop(context);
-                                // }),
                                 ),
                           ),
                         ),
@@ -258,10 +234,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                   ),
                 ),
-                CategoryList(
-                    // list: _categoryList,
-                    // delete: delete,
-                    ),
+                CategoryList(),
               ],
             ),
           ],
@@ -294,58 +267,9 @@ class Percent extends StatelessWidget {
   }
 }
 
-// class Cards extends StatelessWidget {
-//   final List<Budget> list;
-//   final Function delete;
-//   Cards({this.list, this.delete});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Container(
-//       height: 700.0,
-//       child: ListView.builder(
-//         itemBuilder: (context, index) {
-//           return InkWell(
-//             onTap: () => Navigator.push(
-//               context,
-//               MaterialPageRoute(
-//                 builder: (context) => CategoryCard(
-//                   title: list[index].title,
-//                   budget: list[index].amount,
-//                 ),
-//               ),
-//             ),
-//             child: Card(
-//               color: Colors.deepOrange[300],
-//               margin: EdgeInsets.symmetric(
-//                 horizontal: 20.0,
-//                 vertical: 8.0,
-//               ),
-//               elevation: 10,
-//               child: ListTile(
-//                 title: Text('${list[index].title}'),
-//                 subtitle: Text('${list[index].amount}'),
-//                 trailing: IconButton(
-//                   color: Colors.red,
-//                   icon: Icon(Icons.delete),
-//                   onPressed: () => delete(list[index].id),
-//                 ),
-//               ),
-//             ),
-//           );
-//         },
-//         shrinkWrap: true,
-//         physics: NeverScrollableScrollPhysics(),
-//         itemCount: list.length,
-//       ),
-//     );
-//   }
-// }
 
 class CategoryList extends StatelessWidget {
-  // final List<Budget> list;
-  // final Function delete;
-  // CategoryList({this.list, this.delete});
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -374,6 +298,7 @@ class CategoryList extends StatelessWidget {
                     builder: (context) => CategoryCard(
                       title: categoryList[index].title,
                       budget: categoryList[index].amount,
+                      catID: index,
                     ),
                   ),
                 ),
@@ -391,9 +316,9 @@ class CategoryList extends StatelessWidget {
                         color: Colors.red,
                         icon: Icon(Icons.delete),
                         onPressed: () {
-                          BlocProvider.of<CategoryBloc>(context).add(
-                            TrackerEvent.delCategory(index),
-                          );
+                          // BlocProvider.of<CategoryBloc>(context).add(
+                          //   CategoryEvent.delCategory(index),
+                          // );
                         }
                         //onPressed: () =>{} //delete(categoryList[index].id),
                         ),
