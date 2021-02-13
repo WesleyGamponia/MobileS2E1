@@ -8,7 +8,7 @@ import 'package:mobiles2e1/Database.dart';
 class Cards extends StatefulWidget {
   Function getExpense;
   final int catID;
-  Cards({this.catID,this.getExpense});
+  Cards({this.catID, this.getExpense});
 
   @override
   _CardsState createState() => _CardsState();
@@ -42,14 +42,12 @@ class _CardsState extends State<Cards> {
             return false;
         },
         builder: (context, itemList) {
-          
           return ListView.builder(
             scrollDirection: Axis.vertical,
             shrinkWrap: true,
             padding: EdgeInsets.all(16),
             itemCount: itemList.length,
             itemBuilder: (context, index) {
-              
               return (itemList[index].categoryID == widget.catID)
                   ? InkWell(
                       onTap: () {
@@ -84,7 +82,7 @@ class _CardsState extends State<Cards> {
                                                 ),
                                                 keyboardType:
                                                     TextInputType.text,
-                                                // controller: itemTitle,
+                                                controller: itemTitle,
                                               ),
                                             ),
                                           ],
@@ -114,7 +112,7 @@ class _CardsState extends State<Cards> {
                                                 ),
                                                 keyboardType:
                                                     TextInputType.number,
-                                                // controller: itemCost,
+                                                controller: itemCost,
                                               ),
                                             ),
                                           ],
@@ -142,13 +140,45 @@ class _CardsState extends State<Cards> {
                                                   hintText:
                                                       '${itemList[index].date}',
                                                 ),
-                                                keyboardType:
-                                                    TextInputType.number,
-                                                //controller: itemDate,
+                                                enabled: false,
                                               ),
                                             ),
                                           ],
                                         ),
+                                      ),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                        children: [
+                                          Container(
+                                            decoration: BoxDecoration(
+                                              border: Border.all(),
+                                              borderRadius:
+                                                  const BorderRadius.all(
+                                                const Radius.circular(10.0),
+                                              ),
+                                            ),
+                                            child: FlatButton(
+                                              child: Text('Change'),
+                                              onPressed: () {
+                                                itemTitle.text = "";
+                                                itemCost.text = "";
+                                                Navigator.pop(context);
+                                              },
+                                            ),
+                                          ),
+                                          Container(
+                                            decoration: BoxDecoration(
+                                              border: Border.all(),
+                                              borderRadius:
+                                                  const BorderRadius.all(
+                                                const Radius.circular(10.0),
+                                              ),
+                                            ),
+                                            child: IconButton(
+                                                icon: Icon(Icons.delete),
+                                                onPressed: () {}),
+                                          )
+                                        ],
                                       ),
                                     ],
                                   ),
