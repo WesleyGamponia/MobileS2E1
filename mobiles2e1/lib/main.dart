@@ -315,17 +315,7 @@ class CategoryList extends StatelessWidget {
                   elevation: 10,
                   child: ListTile(
                     title: Text('${categoryList[index].title}'),
-                    subtitle: Text('${categoryList[index].amount}'),
-                    trailing: IconButton(
-                        color: Colors.red,
-                        icon: Icon(Icons.delete),
-                        onPressed: () {
-                          // BlocProvider.of<CategoryBloc>(context).add(
-                          //   CategoryEvent.delCategory(index),
-                          // );
-                        }
-                        //onPressed: () =>{} //delete(categoryList[index].id),
-                        ),
+                    trailing: Text('/${categoryList[index].amount}'),
                   ),
                 ),
               );
