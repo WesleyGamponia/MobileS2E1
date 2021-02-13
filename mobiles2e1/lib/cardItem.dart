@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobiles2e1/bloc/item_bloc.dart';
+import 'package:mobiles2e1/events/delete_item.dart';
 import 'package:mobiles2e1/events/set_items.dart';
 import 'package:mobiles2e1/models/budgetDetail.dart';
 import 'package:mobiles2e1/Database.dart';
@@ -147,7 +148,8 @@ class _CardsState extends State<Cards> {
                                         ),
                                       ),
                                       Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceAround,
                                         children: [
                                           Container(
                                             decoration: BoxDecoration(
@@ -175,8 +177,20 @@ class _CardsState extends State<Cards> {
                                               ),
                                             ),
                                             child: IconButton(
-                                                icon: Icon(Icons.delete),
-                                                onPressed: () {}),
+                                              icon: Icon(Icons.delete),
+                                              onPressed: () { DBProvider.db
+                                                  .delete(itemList[index].id)
+                                                  .then(
+                                                    (_) => BlocProvider.of<
+                                                            ItemBloc>(context)
+                                                        .add(
+                                                      DeleteItem(
+                                                          index),
+                                                    ),
+                                                  );
+                                                  Navigator.pop(context);
+                                              }
+                                            ),
                                           )
                                         ],
                                       ),
