@@ -31,7 +31,7 @@ class DBProvider {
   Future<Database> createDB() async {
     String dbPath = await getDatabasesPath();
     return await openDatabase(
-      join(dbPath, 'trackerDB8.db'),
+      join(dbPath, 'trackerDB11.db'),
       version: 1,
       onCreate: (Database database, int version) async {
         await database.execute('''
@@ -59,7 +59,7 @@ class DBProvider {
     final db = await database;
     var categories = await db.query(
       TABLE_CATEGORY,
-      columns: [CATEGORY_ID, CATEGORY_NAME, CATEGORY_BUDGET],
+      columns: [CATEGORY_ID, CATEGORY_NAME, CATEGORY_BUDGET,CATEGORY_EXPENSE],
     );
     List<Budget> categoryList = List<Budget>();
 

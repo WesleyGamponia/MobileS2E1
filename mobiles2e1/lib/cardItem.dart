@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mobiles2e1/bloc/budget_bloc.dart';
 import 'package:mobiles2e1/bloc/item_bloc.dart';
 import 'package:mobiles2e1/events/delete_item.dart';
 import 'package:mobiles2e1/events/set_items.dart';
+import 'package:mobiles2e1/events/update_category.dart';
 import 'package:mobiles2e1/events/update_item.dart';
 import 'package:mobiles2e1/models/budgetDetail.dart';
 import 'package:mobiles2e1/Database.dart';
 
 class Cards extends StatefulWidget {
-  Function getExpense;
+  final int listIndex;
   final int catID;
-  Cards({this.catID, this.getExpense});
+  final Budget category;
+  Cards({this.catID, this.listIndex, this.category});
 
   @override
   _CardsState createState() => _CardsState();
@@ -164,6 +167,9 @@ class _CardsState extends State<Cards> {
                                               //UPDATE
                                               child: Text('Change'),
                                               onPressed: () {
+                                                double orgExpense =
+                                                    itemList[index]
+                                                        .amount; //old value
                                                 Item item = Item(
                                                   amount: double.parse(
                                                       itemCost.text),
@@ -173,14 +179,31 @@ class _CardsState extends State<Cards> {
                                                       .categoryID,
                                                   id: itemList[index].id,
                                                 );
-                                                DBProvider.db
-                                                    .update(item)
-                                                    .then((storedItem) =>
-                                                        BlocProvider.of<
-                                                                    ItemBloc>(
+                                                DBProvider.db.update(item).then(
+                                                    (storedItem) => BlocProvider
+                                                            .of<ItemBloc>(
                                                                 context)
-                                                            .add(UpdateItem(
-                                                                index, item)));
+                                                        .add(UpdateItem(
+                                                            index, item)));
+                                                Budget category1 = Budget(
+                                                  id: widget.category.id,
+                                                  amount: widget.category.amount,
+                                                  expense: widget.category.expense +
+                                                      double.parse(
+                                                          itemCost.text) -
+                                                      orgExpense,
+                                                  title: widget.category.title
+                                                );
+                                                DBProvider.db
+                                                    .updateCategory(category1)
+                                                    .then((storedCategory) =>
+                                                        BlocProvider.of<
+                                                                    CategoryBloc>(
+                                                                context)
+                                                            .add(UpdateCategory(
+                                                                widget
+                                                                    .listIndex,
+                                                                category1)));
                                                 itemTitle.text = "";
                                                 itemCost.text = "";
                                                 Navigator.pop(context);
@@ -198,6 +221,22 @@ class _CardsState extends State<Cards> {
                                             child: IconButton(
                                                 icon: Icon(Icons.delete),
                                                 onPressed: () {
+                                                   Budget category1 = Budget(
+                                                  id: widget.category.id,
+                                                  amount: widget.category.amount,
+                                                  expense: widget.category.expense - itemList[index].amount,
+                                                  title: widget.category.title
+                                                );
+                                                DBProvider.db
+                                                    .updateCategory(category1)
+                                                    .then((storedCategory) =>
+                                                        BlocProvider.of<
+                                                                    CategoryBloc>(
+                                                                context)
+                                                            .add(UpdateCategory(
+                                                                widget
+                                                                    .listIndex,
+                                                                category1)));
                                                   DBProvider.db
                                                       .delete(
                                                           itemList[index].id)
@@ -218,12 +257,6 @@ class _CardsState extends State<Cards> {
                                   ),
                                 ));
                       },
-                      // => Navigator.push(
-                      //     context,
-                      //     MaterialPageRoute(
-                      //         builder: (context) => ItemCard(
-                      //               title: list[index].title,
-                      //             ))),
                       child: Card(
                         color: Colors.deepOrange[300],
                         margin: EdgeInsets.symmetric(
@@ -244,9 +277,7 @@ class _CardsState extends State<Cards> {
           );
         },
         listener: (BuildContext context, itemList) {
-          Scaffold.of(context).showSnackBar(SnackBar(
-            content: Text("added"),
-          ));
+          return null;
         },
       ),
     );

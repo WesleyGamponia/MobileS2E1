@@ -333,9 +333,7 @@ class CategoryList extends StatelessWidget {
           );
         },
         listener: (BuildContext context, categoryList) {
-          Scaffold.of(context).showSnackBar(SnackBar(
-            content: Text("Category Added!"),
-          ));
+          return null;
         },
       ),
     );
