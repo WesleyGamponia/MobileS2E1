@@ -29,22 +29,6 @@ class ItemBloc extends Bloc<ItemEvent, List<Item>> {
       newState[event.itemIndex] = event.newItem;
       yield newState;
     }
-    // switch (event.eventType) {
-    //   case EventType.addItem:
-    //     List<Item> newState = List.from(state);
-    //     if (event.item != null) {
-    //       newState.add(event.item);
-    //     }
-    //     yield newState;
-    //     break;
-    //   case EventType.delItem:
-    //     List<Item> newState = List.from(state);
-    //     print(newState.length);
-    //     newState.removeAt(event.itemIndex);
-    //     yield newState;
-    //     break;
-    //   default:
-    //     throw Exception('Event not found $event');
-    // }
+    
   }
 }

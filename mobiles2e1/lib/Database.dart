@@ -32,7 +32,7 @@ class DBProvider {
   Future<Database> createDB() async {
     String dbPath = await getDatabasesPath();
     return await openDatabase(
-      join(dbPath, 'trackerDB1.db'),
+      join(dbPath, 'trackerDB4.db'),
       version: 1,
       onCreate: (Database database, int version) async {
         await database.execute('''
@@ -112,7 +112,7 @@ class DBProvider {
     final db = await database;
     return await db.delete(
       TABLE_ITEM,
-      where: "ITEM_ID = ?",
+      where: "$ITEM_ID = ?",
       whereArgs: [id],
     );
   }
