@@ -5,12 +5,14 @@ class Budget {//category
    String title;//name
    double amount;//budget
    int id;
-  Budget({this.title, this.amount,this.id});
+   double expense;
+  Budget({this.title, this.amount,this.id,this.expense});
 
   Map<String, dynamic> toMap(){
     var map = <String, dynamic>{
       DBProvider.CATEGORY_NAME: title,
       DBProvider.CATEGORY_BUDGET: amount,
+      DBProvider.CATEGORY_EXPENSE: expense,
     };
     if(id!=null){
       map[DBProvider.CATEGORY_ID]=id;
@@ -22,6 +24,7 @@ class Budget {//category
     id= map[DBProvider.CATEGORY_ID];
     title= map[DBProvider.CATEGORY_NAME];
     amount= map[DBProvider.CATEGORY_BUDGET];
+    expense = map[DBProvider.CATEGORY_EXPENSE];
   }
 }
 

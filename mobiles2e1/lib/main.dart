@@ -150,6 +150,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                   Budget category = Budget(
                                     title: categoryName.text,
                                     amount: double.parse(categoryBudget.text),
+                                    expense: 0,
                                   );
                                   DBProvider.db.insertCategory(category).then(
                                         (storedCategory) =>
@@ -300,8 +301,8 @@ class CategoryList extends StatelessWidget {
                   MaterialPageRoute(
                     builder: (context) => CategoryCard(
                       title: categoryList[index].title,
-                      budget: categoryList[index].amount,
-                      catID: index,
+                      //category: categoryList[index],
+                      listIndex: index,
                     ),
                   ),
                 ),
@@ -333,7 +334,7 @@ class CategoryList extends StatelessWidget {
         },
         listener: (BuildContext context, categoryList) {
           Scaffold.of(context).showSnackBar(SnackBar(
-            content: Text("added"),
+            content: Text("Category Added!"),
           ));
         },
       ),

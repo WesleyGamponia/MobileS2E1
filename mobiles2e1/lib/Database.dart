@@ -1,4 +1,3 @@
-
 import 'package:sqflite/sqflite.dart';
 import 'package:sqflite/sqlite_api.dart';
 import 'package:path/path.dart';
@@ -32,7 +31,7 @@ class DBProvider {
   Future<Database> createDB() async {
     String dbPath = await getDatabasesPath();
     return await openDatabase(
-      join(dbPath, 'trackerDB4.db'),
+      join(dbPath, 'trackerDB8.db'),
       version: 1,
       onCreate: (Database database, int version) async {
         await database.execute('''
@@ -122,8 +121,14 @@ class DBProvider {
     return await db.update(
       TABLE_ITEM,
       item.toMap(),
-      where: "ITEM_ID = ?",
+      where: "$ITEM_ID = ?",
       whereArgs: [item.id],
     );
+  }
+
+  Future<int> updateCategory(Budget category) async {
+    final db = await database;
+    return await db.update(TABLE_CATEGORY, category.toMap(),
+        where: "$CATEGORY_ID = ?", whereArgs: [category.id]);
   }
 }

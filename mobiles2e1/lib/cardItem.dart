@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobiles2e1/bloc/item_bloc.dart';
 import 'package:mobiles2e1/events/delete_item.dart';
 import 'package:mobiles2e1/events/set_items.dart';
+import 'package:mobiles2e1/events/update_item.dart';
 import 'package:mobiles2e1/models/budgetDetail.dart';
 import 'package:mobiles2e1/Database.dart';
 
@@ -160,8 +161,26 @@ class _CardsState extends State<Cards> {
                                               ),
                                             ),
                                             child: FlatButton(
+                                              //UPDATE
                                               child: Text('Change'),
                                               onPressed: () {
+                                                Item item = Item(
+                                                  amount: double.parse(
+                                                      itemCost.text),
+                                                  title: itemTitle.text,
+                                                  date: itemList[index].date,
+                                                  categoryID: itemList[index]
+                                                      .categoryID,
+                                                  id: itemList[index].id,
+                                                );
+                                                DBProvider.db
+                                                    .update(item)
+                                                    .then((storedItem) =>
+                                                        BlocProvider.of<
+                                                                    ItemBloc>(
+                                                                context)
+                                                            .add(UpdateItem(
+                                                                index, item)));
                                                 itemTitle.text = "";
                                                 itemCost.text = "";
                                                 Navigator.pop(context);
@@ -177,20 +196,21 @@ class _CardsState extends State<Cards> {
                                               ),
                                             ),
                                             child: IconButton(
-                                              icon: Icon(Icons.delete),
-                                              onPressed: () { DBProvider.db
-                                                  .delete(itemList[index].id)
-                                                  .then(
-                                                    (_) => BlocProvider.of<
-                                                            ItemBloc>(context)
-                                                        .add(
-                                                      DeleteItem(
-                                                          index),
-                                                    ),
-                                                  );
+                                                icon: Icon(Icons.delete),
+                                                onPressed: () {
+                                                  DBProvider.db
+                                                      .delete(
+                                                          itemList[index].id)
+                                                      .then(
+                                                        (_) => BlocProvider.of<
+                                                                    ItemBloc>(
+                                                                context)
+                                                            .add(
+                                                          DeleteItem(index),
+                                                        ),
+                                                      );
                                                   Navigator.pop(context);
-                                              }
-                                            ),
+                                                }),
                                           )
                                         ],
                                       ),
