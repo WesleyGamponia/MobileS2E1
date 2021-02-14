@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -65,12 +64,14 @@ class _MyHomePageState extends State<MyHomePage> {
         BlocProvider.of<CategoryBloc>(context)
             .add(SetCategories(categoryList)));
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: _sideMenu(),
       appBar: AppBar(
         title: Text('Budget Planning'),
-        leading: IconButton(icon: Icon(Icons.settings), onPressed: () {}),
+        // leading: IconButton(icon: Icon(Icons.settings), onPressed: () {}),
         actions: <Widget>[
           IconButton(
               icon: Icon(Icons.add),
@@ -154,7 +155,8 @@ class _MyHomePageState extends State<MyHomePage> {
                                   );
                                   DBProvider.db.insertCategory(category).then(
                                         (storedCategory) =>
-                                            BlocProvider.of<CategoryBloc>(context)
+                                            BlocProvider.of<CategoryBloc>(
+                                                    context)
                                                 .add(
                                           AddCategory(storedCategory),
                                         ),
@@ -162,8 +164,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                   categoryBudget.text = '';
                                   categoryName.text = '';
                                   Navigator.pop(context);
-                                }
-                                ),
+                                }),
                           ),
                         ),
                       ],
@@ -270,9 +271,7 @@ class Percent extends StatelessWidget {
   }
 }
 
-
 class CategoryList extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -315,7 +314,8 @@ class CategoryList extends StatelessWidget {
                   elevation: 10,
                   child: ListTile(
                     title: Text('${categoryList[index].title}'),
-                    trailing: Text('${categoryList[index].expense}/${categoryList[index].amount}'),
+                    trailing: Text(
+                        '${categoryList[index].expense}/${categoryList[index].amount}'),
                   ),
                 ),
               );
@@ -328,4 +328,33 @@ class CategoryList extends StatelessWidget {
       ),
     );
   }
+}
+
+Widget _sideMenu() {
+  return Container(
+    width: 210,
+    child: Drawer(
+      child: ListView(
+        children: <Widget>[
+          Container(
+            color: Colors.deepOrange[300],
+            child: DrawerHeader(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CircleAvatar(
+                    radius: 50,
+                    backgroundImage: NetworkImage('https://scontent.fceb2-2.fna.fbcdn.net/v/t1.0-9/69760176_2922133204468094_4536344075783110656_o.jpg?_nc_cat=110&ccb=3&_nc_sid=09cbfe&_nc_eui2=AeE6cBfRjR6wYnyKEb0cQ2uRUmtov9zYuHtSa2i_3Ni4e9upwpPiXfQJ1WO90kyoxg-cdikS23fWJgyMAwtBcucB&_nc_ohc=V6L9QWD1AzwAX-jKlBC&_nc_oc=AQk0ZzuI-kUaU1gt9V_tmSX-xW44yyAH4bX3XjV_fQJNnyS4TyHm0j5XUf48bfD83oc&_nc_ht=scontent.fceb2-2.fna&oh=04c2a0a74f7de036c0ef734281ebd87e&oe=60506521'),
+                  ),
+                  SizedBox(height: 5),
+                  Text('Ryan Gil B. Garcia'),
+                  Text('ryan.garcia.20@usjr.edu.ph'),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
 }
