@@ -315,7 +315,7 @@ class CategoryList extends StatelessWidget {
                   elevation: 10,
                   child: ListTile(
                     title: Text('${categoryList[index].title}'),
-                    trailing: Text('/${categoryList[index].amount}'),
+                    trailing: Text('${categoryList[index].expense}/${categoryList[index].amount}'),
                   ),
                 ),
               );
