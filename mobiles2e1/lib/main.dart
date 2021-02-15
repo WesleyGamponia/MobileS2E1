@@ -8,13 +8,12 @@ import 'package:mobiles2e1/bloc/item_bloc.dart';
 import 'package:mobiles2e1/bloc/item_bloc_delegate.dart';
 import 'package:mobiles2e1/events/new_category.dart';
 import 'package:mobiles2e1/events/set_categories.dart';
+import 'package:mobiles2e1/previousDate.dart';
 import 'bloc/budget_bloc.dart';
 import 'bloc/budget_bloc_delegate.dart';
 import 'categoryCard.dart';
 import 'models/budgetDetail.dart';
 import 'package:intl/intl.dart';
-
-
 
 void main() {
   BlocSupervisor.delegate = CategoryBlocDelegate();
@@ -40,6 +39,7 @@ class MyApp extends StatelessWidget {
         ),
       ],
       child: MaterialApp(
+        initialRoute: '/',
         title: 'Flutter Demo',
         theme: ThemeData(
           primarySwatch: Colors.orange,
@@ -70,6 +70,54 @@ class _MyHomePageState extends State<MyHomePage> {
             .add(SetCategories(categoryList)));
   }
 
+  int _weekfDate (){
+    int n = 0;
+    switch (DateFormat('EEEE').format(DateTime.now())) {
+       case 'Monday':
+        return n = -1;
+        break;
+        case 'Tuesday':
+        return n = -2;
+        break;
+        case 'Wednesday':
+        return n = -3;
+        break;
+        case 'Thursday':
+        return n = -4;
+        break;
+        case 'Friday':
+        return n = -5;
+        break;
+        case 'Saturday':
+        return n = -6;
+        break;
+    }
+    return n;
+  }
+  int _weeklDate (){
+    int n = 7;
+    switch (DateFormat('EEEE').format(DateTime.now())) {
+       case 'Monday':
+        return n = 6;
+        break;
+        case 'Tuesday':
+        return n = 5;
+        break;
+        case 'Wednesday':
+        return n = 4;
+        break;
+        case 'Thursday':
+        return n = 3;
+        break;
+        case 'Friday':
+        return n = 2;
+        break;
+        case 'Saturday':
+        return n = 1;
+        break;
+    }
+    return n;
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -187,10 +235,16 @@ class _MyHomePageState extends State<MyHomePage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    IconButton(icon: Icon(Icons.arrow_back), onPressed: () {}),
-                    Text("02/02/21 - 02/09/21"),
                     IconButton(
-                        icon: Icon(Icons.arrow_forward), onPressed: () {}),
+                      icon: Icon(Icons.arrow_back),
+                      onPressed: () {
+                      },
+                    ),
+                    Text(DateFormat.yMd().format(DateTime.now().add(Duration(days: _weekfDate())))+' - ' + DateFormat.yMd().format(DateTime.now().add(Duration(days: _weeklDate())))),
+                    IconButton(
+                        icon: Icon(Icons.arrow_forward),
+                        onPressed: () {
+                        }),
                   ],
                 ),
                 Container(
@@ -350,15 +404,16 @@ class BarChart extends StatelessWidget {
       },
       builder: (context, itemList) {
         return Container(
-          child:ChartList(itemList),
+          child: ChartList(itemList),
         );
       },
-      listener:(BuildContext context, categoryList) {
-          return null;
-        },
+      listener: (BuildContext context, categoryList) {
+        return null;
+      },
     );
   }
 }
+
 class Chart extends StatelessWidget {
   final String day;
   final double amm;
@@ -370,10 +425,11 @@ class Chart extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
-        Text('₱$amm',
-        style: TextStyle(
-          fontSize: 10.0,
-        ),
+        Text(
+          '₱$amm',
+          style: TextStyle(
+            fontSize: 10.0,
+          ),
         ),
         SizedBox(
           height: 5.0,
@@ -413,15 +469,40 @@ class Chart extends StatelessWidget {
 class ChartList extends StatelessWidget {
   final List<Item> itemList;
   ChartList(this.itemList);
-
   
+  int _dayDate(String day){
+    int n =0;
+    switch (day) {
+      case 'Monday':
+        return n = 1;
+        break;
+        case 'Tuesday':
+        return n = 2;
+        break;
+        case 'Wednesday':
+        return n = 3;
+        break;
+        case 'Thursday':
+        return n = 4;
+        break;
+        case 'Friday':
+        return n = 5;
+        break;
+        case 'Saturday':
+        return n = 6;
+        break;
+    }
+    return n;
+  }
+
   List<Map<String, Object>> get days {
     return List.generate(7, (index) {
-      DateTime week = DateTime.now().subtract(Duration(days: index));
+      String day = DateFormat('EEEE').format(DateTime.now());
+      DateTime week = DateTime.now().add(Duration(days: index - _dayDate(day)));
       double examm = 0.0;
       DateTime exdate;
       for (int i = 0; i < itemList.length; i++) {
-        exdate=DateFormat('yMMMMd').parse(itemList[i].date);
+        exdate = DateFormat('yMMMMd').parse(itemList[i].date);
         if (week.day == exdate.day &&
             week.month == exdate.month &&
             week.year == exdate.year) {
@@ -432,8 +513,8 @@ class ChartList extends StatelessWidget {
     });
   }
 
-  double get totalDaySpend{
-    return days.fold(0.0,(sum,item){
+  double get totalDaySpend {
+    return days.fold(0.0, (sum, item) {
       return sum + item['amount'];
     });
   }
@@ -447,7 +528,9 @@ class ChartList extends StatelessWidget {
             child: Chart(
               day: index['day'],
               amm: index['amount'],
-              percent:  totalDaySpend ==0? 0.0 : (index['amount'] as double) / totalDaySpend,
+              percent: totalDaySpend == 0
+                  ? 0.0
+                  : (index['amount'] as double) / totalDaySpend,
             ),
           );
         }).toList(),
