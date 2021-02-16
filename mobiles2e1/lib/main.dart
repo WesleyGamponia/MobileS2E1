@@ -8,7 +8,6 @@ import 'package:mobiles2e1/bloc/item_bloc.dart';
 import 'package:mobiles2e1/bloc/item_bloc_delegate.dart';
 import 'package:mobiles2e1/events/new_category.dart';
 import 'package:mobiles2e1/events/set_categories.dart';
-import 'package:mobiles2e1/previousDate.dart';
 import 'bloc/budget_bloc.dart';
 import 'bloc/budget_bloc_delegate.dart';
 import 'categoryCard.dart';
@@ -62,12 +61,48 @@ class _MyHomePageState extends State<MyHomePage> {
   TextEditingController categoryName = TextEditingController(text: '');
   TextEditingController categoryBudget = TextEditingController(text: '');
   int catID = 1;
+  int nd = 0;
+  DateTime prev = DateTime.now();
+  DateTime nxt = DateTime.now();
+  DateTime pDate = null;
+  String pHolder, nHolder = '';
   @override
   void initState() {
     super.initState();
     DBProvider.db.getCategory().then((categoryList) =>
         BlocProvider.of<CategoryBloc>(context)
             .add(SetCategories(categoryList)));
+  }
+  String _displayDate(int n){
+    String d = '';
+    nd = 1;
+    switch (n) {
+      case 0:
+          d=DateFormat.yMd().format(prev.add(Duration(days: _weekfDate())));
+        break;
+      case 1:
+          d=DateFormat.yMd().format(nxt.add(Duration(days: _weeklDate())));
+        break;
+      case 2:
+          d=DateFormat.yMd().format(prev.add(Duration(days: _weekfDate()-7)));
+          prev = prev.add(Duration(days: _weekfDate()-6));
+          pDate = prev;
+        break;
+      case 3:
+          d=DateFormat.yMd().format(prev.add(Duration(days: _weeklDate())));
+          nxt = prev.add(Duration(days: _weekfDate()));
+          break;
+      case 4:
+          d=DateFormat.yMd().format(prev.add(Duration(days: _weekfDate()+7)));
+          prev = prev.add(Duration(days: _weekfDate()+8));
+          pDate = prev;
+        break;
+      case 5:
+          d=DateFormat.yMd().format(prev.add(Duration(days: _weeklDate())));
+          nxt =prev.add(Duration(days: _weekfDate()));
+          break;
+    }
+    return d;
   }
 
   int _weekfDate (){
@@ -95,25 +130,25 @@ class _MyHomePageState extends State<MyHomePage> {
     return n;
   }
   int _weeklDate (){
-    int n = 7;
+    int n = 6;
     switch (DateFormat('EEEE').format(DateTime.now())) {
        case 'Monday':
-        return n = 6;
-        break;
-        case 'Tuesday':
         return n = 5;
         break;
-        case 'Wednesday':
+        case 'Tuesday':
         return n = 4;
         break;
-        case 'Thursday':
+        case 'Wednesday':
         return n = 3;
         break;
-        case 'Friday':
+        case 'Thursday':
         return n = 2;
         break;
-        case 'Saturday':
+        case 'Friday':
         return n = 1;
+        break;
+        case 'Saturday':
+        return n = 0;
         break;
     }
     return n;
@@ -238,12 +273,22 @@ class _MyHomePageState extends State<MyHomePage> {
                     IconButton(
                       icon: Icon(Icons.arrow_back),
                       onPressed: () {
+                        setState(() {
+                          pHolder = _displayDate(2);
+                          nHolder = _displayDate(3);
+                        });
                       },
                     ),
-                    Text(DateFormat.yMd().format(DateTime.now().add(Duration(days: _weekfDate())))+' - ' + DateFormat.yMd().format(DateTime.now().add(Duration(days: _weeklDate())))),
+                    // Text(DateFormat.yMd().format(DateTime.now().add(Duration(days: _weekfDate())))+' - ' + DateFormat.yMd().format(DateTime.now().add(Duration(days: _weeklDate())))),  
+                    nd == 0 ?
+                    Text(_displayDate(0)+' - '+_displayDate(1)) : Text(pHolder+' - '+nHolder),
                     IconButton(
                         icon: Icon(Icons.arrow_forward),
                         onPressed: () {
+                          setState(() {
+                            pHolder = _displayDate(4);
+                            nHolder = _displayDate(5);
+                          });
                         }),
                   ],
                 ),
