@@ -1,4 +1,4 @@
-import 'package:mobiles2e1/events/delete_category.dart';
+
 import 'package:mobiles2e1/events/new_category.dart';
 import 'package:mobiles2e1/events/set_categories.dart';
 import 'package:mobiles2e1/events/update_category.dart';
@@ -19,32 +19,10 @@ class CategoryBloc extends Bloc<CategoryEvent, List<Budget>> {
         newState.add(event.newCategory);
       }
       yield newState;
-    } else if (event is DeleteCategory) {
-      List<Budget> newState = List.from(state);
-      newState.removeAt(event.categoryIndex);
-      yield newState;
-    } else if (event is UpdateCategory) {
+    }else if (event is UpdateCategory) {
       List<Budget> newState = List.from(state);
       newState[event.categoryIndex] = event.newCategory;
       yield newState;
     }
-    //   switch (event is) {
-    //     case EventType.addCategory:
-    //       List<Budget> newState = List.from(state);
-    //       if (event.category != null) {
-    //         newState.add(event.category);
-    //       }
-    //       yield newState;
-    //       break;
-    //     case EventType.delCategory:
-    //       List<Budget> newState = List.from(state);
-    //       print(newState.length);
-    //       newState.removeAt(event.catIndex);
-    //       yield newState;
-    //       break;
-    //     default:
-    //       throw Exception('Event not found $event');
-    //   }
-    // }
   }
 }
