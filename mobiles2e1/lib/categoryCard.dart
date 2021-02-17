@@ -21,12 +21,7 @@ class CategoryCard extends StatefulWidget {
 }
 
 class _CategoryCardState extends State<CategoryCard> {
-  @override
-  void initState() {
-    super.initState();
-    DBProvider.db.getItem().then((itemList) =>
-        BlocProvider.of<ItemBloc>(context).add(SetItems(itemList)));
-  }
+  
 
   TextEditingController itemTitle = TextEditingController(text: '');
   TextEditingController itemDate = TextEditingController(text: '');
