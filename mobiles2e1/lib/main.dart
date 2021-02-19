@@ -517,7 +517,7 @@ class ChartList extends StatelessWidget {
       DateTime exdate;
       int id;
       for (int i = 0; i < itemList.length; i++) {
-        exdate = DateFormat('yMMMMd').parse(itemList[i].date);
+        exdate = DateFormat('yMd').parse(itemList[i].date);
         if (week.day == exdate.day &&
             week.month == exdate.month &&
             week.year == exdate.year) {

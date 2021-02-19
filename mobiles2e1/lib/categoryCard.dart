@@ -38,7 +38,7 @@ class _CategoryCardState extends State<CategoryCard> {
     );
     if (picked != null)
       setState(() {
-        itemDate.text = DateFormat.yMMMMd().format(picked);
+        itemDate.text = DateFormat.yMd().format(picked);
         day = DateFormat('EEEE').format(picked);
       });
   }
