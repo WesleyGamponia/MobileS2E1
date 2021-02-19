@@ -76,6 +76,11 @@ class _MyHomePageState extends State<MyHomePage> {
 
     DBProvider.db.getItem().then((itemList) =>
         BlocProvider.of<ItemBloc>(context).add(SetItems(itemList)));
+
+    setState(() {
+      pHolder = DateFormat.yMd().format(prev.add(Duration(days: _weekfDate())));
+      nHolder = DateFormat.yMd().format(nxt.add(Duration(days: _weeklDate())));
+    });
   }
 
   String _displayDate(int n) {
@@ -510,15 +515,19 @@ class ChartList extends StatelessWidget {
       DateTime week = DateTime.now().add(Duration(days: index - _dayDate(day)));
       double examm = 0.0;
       DateTime exdate;
+      int id;
       for (int i = 0; i < itemList.length; i++) {
         exdate = DateFormat('yMMMMd').parse(itemList[i].date);
         if (week.day == exdate.day &&
             week.month == exdate.month &&
             week.year == exdate.year) {
           examm += itemList[i].amount;
+          id = itemList[i].id;
+           print(itemList[i].date);
         }
       }
-      return {'day': DateFormat.E().format(week), 'amount': examm};
+     
+      return {'day': DateFormat.E().format(week), 'amount': examm, 'id': id};
     });
   }
 
@@ -527,7 +536,7 @@ class ChartList extends StatelessWidget {
       return sum + item['amount'];
     });
   }
-
+ 
 //  DateFormat.yMd().format(prev.add(Duration(days: _weeklDate())));
 //         nxt = prev.add(Duration(days: _weekfDate()));
   @override
@@ -536,37 +545,36 @@ class ChartList extends StatelessWidget {
     // DateFormat.yMMMMd().format(picked);
     return Column(
       children: [
-        Text(nHolder.toString()),
-        Text(pHolder.toString()),
+        Text(nHolder),
+        Text(pHolder),
+        //Text(itemList[1].date),
         Card(
           child: Row(
             children: days.map((index) {
               return Expanded(
-                child: Chart(
-                    day: index['day'],
-                    amm: index['amount'],
-                    percent: totalDaySpend == 0
-                        ? 0.0
-                        : (index['amount'] as double) / totalDaySpend
+                child: Column(
+                  children: [
+                    Chart(
+                        day: index['day'],
+                        amm: index['amount'],
+                        percent: totalDaySpend == 0
+                            ? 0.0
+                            : (index['amount'] as double) / totalDaySpend
 
-                    // percent: totalDaySpend == 0
-                    //     ? 0.0
-                    //     : ((DateFormat('dMy').parse(index['day']).isAfter(
-                    //                         DateFormat('dMy')
-                    //                             .parse(pHolder + " 00:00:00")) ||
-                    //                     DateFormat('dMy')
-                    //                         .parse(index['day'])
-                    //                         .isAtSameMomentAs(DateFormat('dMy')
-                    //                             .parse(pHolder + " 00:00:00"))) &&
-                    //                 (DateFormat('dMy')
-                    //                     .parse(index['day'])
-                    //                     .isBefore(DateFormat('dMy')
-                    //                         .parse(nHolder + " 00:00:00"))) ||
-                    //             DateFormat('dMy').parse(index['day']).isAtSameMomentAs(
-                    //                 DateFormat('dMy').parse(nHolder + " 00:00:00")))
-                    //         ? (index['amount'] as double) / totalDaySpend
-                    //         : Container(),
-                    ),
+                        // percent: totalDaySpend == 0
+                        //     ? 0.0
+                        //     : ((DateFormat('dMy').parse(itemList[index['id']].date).isAfter(
+                        //                         DateFormat('dMy')
+                        //                             .parse(pHolder))) &&
+                        //                 (DateFormat('dMy')
+                        //                     .parse(itemList[index['id']].date)
+                        //                     .isBefore(DateFormat('dMy')
+                        //                         .parse(nHolder))) )
+                        //         ? (index['amount'] as double) / totalDaySpend
+                        //         : Container(),
+                        ),
+                  ],
+                ),
               );
             }).toList(),
           ),
