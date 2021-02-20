@@ -7,7 +7,6 @@ import 'package:mobiles2e1/bloc/item_bloc_delegate.dart';
 import 'package:mobiles2e1/events/new_category.dart';
 import 'package:mobiles2e1/events/set_categories.dart';
 import 'package:mobiles2e1/events/set_items.dart';
-import 'package:mobiles2e1/models/weekList.dart';
 import 'bloc/budget_bloc.dart';
 import 'bloc/budget_bloc_delegate.dart';
 import 'categoryCard.dart';
@@ -65,7 +64,6 @@ class _MyHomePageState extends State<MyHomePage> {
   DateTime prev = DateTime.now();
   DateTime nxt = DateTime.now();
   DateTime pDate;
-  List<WeekList> weekList = List<WeekList>();
   String pHolder, nHolder = '';
   @override
   void initState() {

@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobiles2e1/bloc/budget_bloc.dart';
 import 'package:mobiles2e1/bloc/item_bloc.dart';
 import 'package:mobiles2e1/events/delete_item.dart';
-import 'package:mobiles2e1/events/set_items.dart';
 import 'package:mobiles2e1/events/update_category.dart';
 import 'package:mobiles2e1/events/update_item.dart';
 import 'package:mobiles2e1/models/budgetDetail.dart';
@@ -22,15 +21,6 @@ class Cards extends StatefulWidget {
 class _CardsState extends State<Cards> {
   TextEditingController itemTitle = TextEditingController(text: '');
   TextEditingController itemCost = TextEditingController(text: '');
-
-  // void _change(String iTitle, double iAmount, Item index) {
-  //   index.title = iTitle;
-
-  //   setState(() {
-  //     expense += iAmount;
-  //     _itemList.add(add);
-  //   });
-  // }
   @override
   @override
   Widget build(BuildContext context) {

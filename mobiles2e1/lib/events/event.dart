@@ -33,4 +33,3 @@ class ItemEvent {
   }
 }
 
-abstract class TrackerEvent{}
