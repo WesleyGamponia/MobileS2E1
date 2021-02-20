@@ -87,44 +87,59 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  int _dayDate(String day) {
+    int n = 0;
+    switch (day) {
+      case 'Monday':
+        return n = 1;
+        break;
+      case 'Tuesday':
+        return n = 2;
+        break;
+      case 'Wednesday':
+        return n = 3;
+        break;
+      case 'Thursday':
+        return n = 4;
+        break;
+      case 'Friday':
+        return n = 5;
+        break;
+      case 'Saturday':
+        return n = 6;
+        break;
+    }
+    return n;
+  }
+
   // void setWeek(String pHolder, String nHolder, List<Item> itemList) {
-  //   WeekList week;
+  //   WeekList week1;
 
   //   for (var i = 0; i < 7; i++) {
-  //     for (var o = 0; o < itemList.length; o++) {
-  //       if (DateTime.parse(itemList[o].date + " 00:00:00")
-  //               .isAfter(DateTime.parse(pHolder + " 00:00:00")) &&
-  //           DateTime.parse(itemList[o].date + " 00:00:00")
-  //               .isBefore(DateTime.parse(nHolder + " 00:00:00"))) {
-  //         week.amount += itemList[o].amount;
+  //     String day = DateFormat('EEEE').format(DateTime.now());
+  //     DateTime week = DateTime.now().add(Duration(days: i - _dayDate(day)));
+  //     DateTime exdate;
+  //     for (int o = 0; o < itemList.length; o++) {
+  //       exdate = DateFormat('yyyy-MM-dd').parse(itemList[i].date);
+  //       if (week.day == exdate.day &&
+  //           week.month == exdate.month &&
+  //           week.year == exdate.year) {
+  //         if (((DateTime.parse(itemList[o].date + " 00:00:00")
+  //                     .isAfter(DateTime.parse(pHolder + " 00:00:00"))) &&
+  //                 (DateTime.parse(itemList[o].date)
+  //                     .isBefore(DateTime.parse(nHolder + " 00:00:00")))) ||
+  //             ((DateTime.parse(itemList[o].date + " 00:00:00").isAtSameMomentAs(
+  //                     DateTime.parse(pHolder + " 00:00:00"))) ||
+  //                 (DateTime.parse(itemList[o].date).isAtSameMomentAs(
+  //                     DateTime.parse(nHolder + " 00:00:00"))))) {
+  //           week1.amount += itemList[o].amount;
+  //         }
   //       }
   //     }
+      
 
-  //     switch (i) {
-  //       case 0:
-  //         week.day = 'Sun';
-  //         break;
-  //       case 1:
-  //         week.day = 'Mon';
-  //         break;
-  //       case 2:
-  //         week.day = 'Tue';
-  //         break;
-  //       case 3:
-  //         week.day = 'Wed';
-  //         break;
-  //       case 4:
-  //         week.day = 'Thu';
-  //         break;
-  //       case 5:
-  //         week.day = 'Fri';
-  //         break;
-  //       case 6:
-  //         week.day = 'Sat';
-  //         break;
-  //     }
   //     setState(() {
-  //       weekList.add(week);
+  //       weekList.add(week1);
   //     });
   //   }
   // }
@@ -144,7 +159,7 @@ class _MyHomePageState extends State<MyHomePage> {
       case 2:
         d = DateFormat("yyyy-MM-dd")
             .format(prev.add(Duration(days: _weekfDate() - 7)));
-        prev = prev.add(Duration(days: _weekfDate() - 6));
+        prev = prev.add(Duration(days: _weekfDate() - 1));
         pDate = prev;
         break;
       case 3:
@@ -155,7 +170,7 @@ class _MyHomePageState extends State<MyHomePage> {
       case 4:
         d = DateFormat("yyyy-MM-dd")
             .format(prev.add(Duration(days: _weekfDate() + 7)));
-        prev = prev.add(Duration(days: _weekfDate() + 8));
+        prev = prev.add(Duration(days: _weekfDate() + 13));
         pDate = prev;
         break;
       case 5:
@@ -326,23 +341,23 @@ class _MyHomePageState extends State<MyHomePage> {
               })
         ],
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Column(
+      body: BlocConsumer<ItemBloc, List<Item>>(
+        buildWhen: (List<Item> previous, List<Item> current) {
+          return true;
+        },
+        listenWhen: (List<Item> previous, List<Item> current) {
+          if (current.length > previous.length)
+            return true;
+          else
+            return false;
+        },
+        builder: (context, itemList) {
+          return SingleChildScrollView(
+            child: Column(
               children: [
-                BlocConsumer<ItemBloc, List<Item>>(
-                  buildWhen: (List<Item> previous, List<Item> current) {
-                    return true;
-                  },
-                  listenWhen: (List<Item> previous, List<Item> current) {
-                    if (current.length > previous.length)
-                      return true;
-                    else
-                      return false;
-                  },
-                  builder: (context, itemList) {
-                    return Row(
+                Column(
+                  children: [
+                    Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         IconButton(
@@ -371,40 +386,40 @@ class _MyHomePageState extends State<MyHomePage> {
                               });
                             }),
                       ],
-                    );
-                  },
-                  listener: (BuildContext context, itemList) {
-                    return null;
-                  },
-                ),
-                Container(
-                  child: Card(
-                    margin: EdgeInsets.symmetric(
-                      horizontal: 20.0,
-                      vertical: 20.0,
                     ),
-                    elevation: 15.0,
-                    child: Column(
-                      children: [
-                        SizedBox(
-                          height: 10.0,
+                    Container(
+                      child: Card(
+                        margin: EdgeInsets.symmetric(
+                          horizontal: 20.0,
+                          vertical: 20.0,
                         ),
-                        BarChart(
-                          nHolder: nHolder,
-                          pHolder: pHolder,
+                        elevation: 15.0,
+                        child: Column(
+                          children: [
+                            SizedBox(
+                              height: 10.0,
+                            ),
+                            BarChart(
+                              nHolder: nHolder,
+                              pHolder: pHolder,
+                            ),
+                            SizedBox(
+                              height: 10.0,
+                            ),
+                          ],
                         ),
-                        SizedBox(
-                          height: 10.0,
-                        ),
-                      ],
+                      ),
                     ),
-                  ),
+                    CategoryList(),
+                  ],
                 ),
-                CategoryList(),
               ],
             ),
-          ],
-        ),
+          );
+        },
+        listener: (BuildContext context, itemList) {
+          return null;
+        },
       ),
     );
   }
@@ -583,8 +598,9 @@ class ChartList extends StatelessWidget {
 
   List<Map<String, Object>> get days {
     return List.generate(7, (index) {
-      String day = DateFormat('EEEE').format(DateTime.now());
-      DateTime week = DateTime.now().add(Duration(days: index - _dayDate(day)));
+      String day = DateFormat('EEEE').format(DateTime.parse(pHolder));
+      DateTime week = DateTime.parse(pHolder).add(Duration(days: index));
+      //DateTime week = DateTime.now().add(Duration(days: index - _dayDate(day)));
       double examm = 0.0;
       DateTime exdate;
       int id = 0;
@@ -593,10 +609,14 @@ class ChartList extends StatelessWidget {
         if (week.day == exdate.day &&
             week.month == exdate.month &&
             week.year == exdate.year) {
-          if ((DateTime.parse(itemList[i].date + " 00:00:00")
-                  .isAfter(DateTime.parse(pHolder))) &&
-              (DateTime.parse(itemList[i].date)
-                  .isBefore(DateTime.parse(nHolder)))) {
+          if (((DateTime.parse(itemList[i].date + " 00:00:00")
+                      .isAfter(DateTime.parse(pHolder + " 00:00:00"))) &&
+                  (DateTime.parse(itemList[i].date)
+                      .isBefore(DateTime.parse(nHolder + " 00:00:00")))) ||
+              ((DateTime.parse(itemList[i].date + " 00:00:00").isAtSameMomentAs(
+                      DateTime.parse(pHolder + " 00:00:00"))) ||
+                  (DateTime.parse(itemList[i].date).isAtSameMomentAs(
+                      DateTime.parse(nHolder + " 00:00:00"))))) {
             examm += itemList[i].amount;
             id = i;
             print(itemList[i].date);
