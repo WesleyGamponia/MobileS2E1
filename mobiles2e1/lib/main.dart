@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -66,7 +64,7 @@ class _MyHomePageState extends State<MyHomePage> {
   int nd = 0;
   DateTime prev = DateTime.now();
   DateTime nxt = DateTime.now();
-  DateTime pDate = null;
+  DateTime pDate;
   List<WeekList> weekList = List<WeekList>();
   String pHolder, nHolder = '';
   @override
@@ -111,38 +109,6 @@ class _MyHomePageState extends State<MyHomePage> {
     }
     return n;
   }
-
-  // void setWeek(String pHolder, String nHolder, List<Item> itemList) {
-  //   WeekList week1;
-
-  //   for (var i = 0; i < 7; i++) {
-  //     String day = DateFormat('EEEE').format(DateTime.now());
-  //     DateTime week = DateTime.now().add(Duration(days: i - _dayDate(day)));
-  //     DateTime exdate;
-  //     for (int o = 0; o < itemList.length; o++) {
-  //       exdate = DateFormat('yyyy-MM-dd').parse(itemList[i].date);
-  //       if (week.day == exdate.day &&
-  //           week.month == exdate.month &&
-  //           week.year == exdate.year) {
-  //         if (((DateTime.parse(itemList[o].date + " 00:00:00")
-  //                     .isAfter(DateTime.parse(pHolder + " 00:00:00"))) &&
-  //                 (DateTime.parse(itemList[o].date)
-  //                     .isBefore(DateTime.parse(nHolder + " 00:00:00")))) ||
-  //             ((DateTime.parse(itemList[o].date + " 00:00:00").isAtSameMomentAs(
-  //                     DateTime.parse(pHolder + " 00:00:00"))) ||
-  //                 (DateTime.parse(itemList[o].date).isAtSameMomentAs(
-  //                     DateTime.parse(nHolder + " 00:00:00"))))) {
-  //           week1.amount += itemList[o].amount;
-  //         }
-  //       }
-  //     }
-      
-
-  //     setState(() {
-  //       weekList.add(week1);
-  //     });
-  //   }
-  // }
 
   String _displayDate(int n) {
     String d = '';
@@ -366,12 +332,9 @@ class _MyHomePageState extends State<MyHomePage> {
                             setState(() {
                               pHolder = _displayDate(2);
                               nHolder = _displayDate(3);
-                              // weekList.clear();
-                              // setWeek(pHolder, nHolder, itemList);
                             });
                           },
                         ),
-                        // Text(DateFormat("yyyy-MM-dd").format(DateTime.now().add(Duration(days: _weekfDate())))+' - ' + DateFormat("yyyy-MM-dd").format(DateTime.now().add(Duration(days: _weeklDate())))),
                         nd == 0
                             ? Text(_displayDate(0) + ' - ' + _displayDate(1))
                             : Text(pHolder + ' - ' + nHolder),
@@ -381,8 +344,6 @@ class _MyHomePageState extends State<MyHomePage> {
                               setState(() {
                                 pHolder = _displayDate(4);
                                 nHolder = _displayDate(5);
-                                // weekList.clear();
-                                // setWeek(pHolder, nHolder, itemList);
                               });
                             }),
                       ],
@@ -598,9 +559,7 @@ class ChartList extends StatelessWidget {
 
   List<Map<String, Object>> get days {
     return List.generate(7, (index) {
-      String day = DateFormat('EEEE').format(DateTime.parse(pHolder));
       DateTime week = DateTime.parse(pHolder).add(Duration(days: index));
-      //DateTime week = DateTime.now().add(Duration(days: index - _dayDate(day)));
       double examm = 0.0;
       DateTime exdate;
       int id = 0;
@@ -636,22 +595,13 @@ class ChartList extends StatelessWidget {
     });
   }
 
-//  DateFormat("yyyy-MM-dd").format(prev.add(Duration(days: _weeklDate())));
-//         nxt = prev.add(Duration(days: _weekfDate()));
   @override
   Widget build(BuildContext context) {
-    // DateTime nHold = nHolder
-    // DateFormat.yMMMMd().format(picked);
     return Column(
       children: [
-        // Text(nHolder),
-        // Text(pHolder),
-        //Text(itemList[1].date),
         Card(
           child: Row(
             children: days.map((index) {
-              // print(index['day']);
-              // print(index['amount']);
               return Expanded(
                 child: Column(
                   children: [
@@ -660,23 +610,7 @@ class ChartList extends StatelessWidget {
                         amm: index['amount'],
                         percent: totalDaySpend == 0
                             ? 0.0
-                            : (index['amount'] as double) / totalDaySpend
-
-                        //if (DateTime.parse(itemList[o].date + " 00:00:00")
-                        //               .isAfter(DateTime.parse(pHolder + " 00:00:00")) &&
-                        //           DateTime.parse(itemList[o].date + " 00:00:00")
-                        //               .isBefore(DateTime.parse(nHolder + " 00:00:00"))) {
-                        //         week.amount += itemList[o].amount;
-                        // percent: totalDaySpend == 0
-                        //     ? 0.0
-                        //     : ((DateTime.parse(itemList[index['id']].date +
-                        //                     " 00:00:00")
-                        //                 .isAfter(DateTime.parse(pHolder))) &&
-                        //             (DateTime.parse(itemList[index['id']].date)
-                        //                 .isBefore(DateTime.parse(nHolder))))
-                        //         ? (index['amount'] as double) / totalDaySpend
-                        //         : (double.parse('0') as double) / totalDaySpend,
-                        ),
+                            : (index['amount'] as double) / totalDaySpend),
                   ],
                 ),
               );
@@ -707,30 +641,33 @@ class Chart extends StatelessWidget {
         SizedBox(
           height: 5.0,
         ),
-        Container(
-          height: 60.0,
-          width: 10.0,
-          decoration: BoxDecoration(
-            color: Colors.grey,
-            borderRadius: BorderRadius.circular(10.0),
-          ),
-          child: Stack(
-            children: <Widget>[
-              Container(
-                decoration: BoxDecoration(
-                  color: Theme.of(context).primaryColor,
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                child: FractionallySizedBox(
-                  heightFactor: percent,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10.0),
+        RotationTransition(
+          turns: AlwaysStoppedAnimation(-180 / 360),
+          child: Container(
+            height: 60.0,
+            width: 10.0,
+            decoration: BoxDecoration(
+              color: Colors.grey,
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            child: Stack(
+              children: <Widget>[
+                Container(
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).primaryColor,
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  child: FractionallySizedBox(
+                    heightFactor: percent,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
         Text('$day'),
