@@ -9,6 +9,7 @@ import 'package:mobiles2e1/bloc/item_bloc_delegate.dart';
 import 'package:mobiles2e1/events/new_category.dart';
 import 'package:mobiles2e1/events/set_categories.dart';
 import 'package:mobiles2e1/events/set_items.dart';
+import 'package:mobiles2e1/models/weekList.dart';
 import 'bloc/budget_bloc.dart';
 import 'bloc/budget_bloc_delegate.dart';
 import 'categoryCard.dart';
@@ -66,6 +67,7 @@ class _MyHomePageState extends State<MyHomePage> {
   DateTime prev = DateTime.now();
   DateTime nxt = DateTime.now();
   DateTime pDate = null;
+  List<WeekList> weekList = List<WeekList>();
   String pHolder, nHolder = '';
   @override
   void initState() {
@@ -78,37 +80,87 @@ class _MyHomePageState extends State<MyHomePage> {
         BlocProvider.of<ItemBloc>(context).add(SetItems(itemList)));
 
     setState(() {
-      pHolder = DateFormat.yMd().format(prev.add(Duration(days: _weekfDate())));
-      nHolder = DateFormat.yMd().format(nxt.add(Duration(days: _weeklDate())));
+      pHolder = DateFormat("yyyy-MM-dd")
+          .format(prev.add(Duration(days: _weekfDate())));
+      nHolder = DateFormat("yyyy-MM-dd")
+          .format(nxt.add(Duration(days: _weeklDate())));
     });
   }
+
+  // void setWeek(String pHolder, String nHolder, List<Item> itemList) {
+  //   WeekList week;
+
+  //   for (var i = 0; i < 7; i++) {
+  //     for (var o = 0; o < itemList.length; o++) {
+  //       if (DateTime.parse(itemList[o].date + " 00:00:00")
+  //               .isAfter(DateTime.parse(pHolder + " 00:00:00")) &&
+  //           DateTime.parse(itemList[o].date + " 00:00:00")
+  //               .isBefore(DateTime.parse(nHolder + " 00:00:00"))) {
+  //         week.amount += itemList[o].amount;
+  //       }
+  //     }
+
+  //     switch (i) {
+  //       case 0:
+  //         week.day = 'Sun';
+  //         break;
+  //       case 1:
+  //         week.day = 'Mon';
+  //         break;
+  //       case 2:
+  //         week.day = 'Tue';
+  //         break;
+  //       case 3:
+  //         week.day = 'Wed';
+  //         break;
+  //       case 4:
+  //         week.day = 'Thu';
+  //         break;
+  //       case 5:
+  //         week.day = 'Fri';
+  //         break;
+  //       case 6:
+  //         week.day = 'Sat';
+  //         break;
+  //     }
+  //     setState(() {
+  //       weekList.add(week);
+  //     });
+  //   }
+  // }
 
   String _displayDate(int n) {
     String d = '';
     nd = 1;
     switch (n) {
       case 0:
-        d = DateFormat.yMd().format(prev.add(Duration(days: _weekfDate())));
+        d = DateFormat("yyyy-MM-dd")
+            .format(prev.add(Duration(days: _weekfDate())));
         break;
       case 1:
-        d = DateFormat.yMd().format(nxt.add(Duration(days: _weeklDate())));
+        d = DateFormat("yyyy-MM-dd")
+            .format(nxt.add(Duration(days: _weeklDate())));
         break;
       case 2:
-        d = DateFormat.yMd().format(prev.add(Duration(days: _weekfDate() - 7)));
+        d = DateFormat("yyyy-MM-dd")
+            .format(prev.add(Duration(days: _weekfDate() - 7)));
         prev = prev.add(Duration(days: _weekfDate() - 6));
         pDate = prev;
         break;
       case 3:
-        d = DateFormat.yMd().format(prev.add(Duration(days: _weeklDate())));
+        d = DateFormat("yyyy-MM-dd")
+            .format(prev.add(Duration(days: _weeklDate())));
         nxt = prev.add(Duration(days: _weekfDate()));
         break;
       case 4:
-        d = DateFormat.yMd().format(prev.add(Duration(days: _weekfDate() + 7)));
+        d = DateFormat("yyyy-MM-dd")
+            .format(prev.add(Duration(days: _weekfDate() + 7)));
         prev = prev.add(Duration(days: _weekfDate() + 8));
         pDate = prev;
         break;
       case 5:
-        d = DateFormat.yMd().format(prev.add(Duration(days: _weeklDate())));
+        d = DateFormat("yyyy-MM-dd")
+            .format(prev.add(Duration(days: _weeklDate())));
         nxt = prev.add(Duration(days: _weekfDate()));
         break;
     }
@@ -279,31 +331,51 @@ class _MyHomePageState extends State<MyHomePage> {
           children: [
             Column(
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    IconButton(
-                      icon: Icon(Icons.arrow_back),
-                      onPressed: () {
-                        setState(() {
-                          pHolder = _displayDate(2);
-                          nHolder = _displayDate(3);
-                        });
-                      },
-                    ),
-                    // Text(DateFormat.yMd().format(DateTime.now().add(Duration(days: _weekfDate())))+' - ' + DateFormat.yMd().format(DateTime.now().add(Duration(days: _weeklDate())))),
-                    nd == 0
-                        ? Text(_displayDate(0) + ' - ' + _displayDate(1))
-                        : Text(pHolder + ' - ' + nHolder),
-                    IconButton(
-                        icon: Icon(Icons.arrow_forward),
-                        onPressed: () {
-                          setState(() {
-                            pHolder = _displayDate(4);
-                            nHolder = _displayDate(5);
-                          });
-                        }),
-                  ],
+                BlocConsumer<ItemBloc, List<Item>>(
+                  buildWhen: (List<Item> previous, List<Item> current) {
+                    return true;
+                  },
+                  listenWhen: (List<Item> previous, List<Item> current) {
+                    if (current.length > previous.length)
+                      return true;
+                    else
+                      return false;
+                  },
+                  builder: (context, itemList) {
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        IconButton(
+                          icon: Icon(Icons.arrow_back),
+                          onPressed: () {
+                            setState(() {
+                              pHolder = _displayDate(2);
+                              nHolder = _displayDate(3);
+                              // weekList.clear();
+                              // setWeek(pHolder, nHolder, itemList);
+                            });
+                          },
+                        ),
+                        // Text(DateFormat("yyyy-MM-dd").format(DateTime.now().add(Duration(days: _weekfDate())))+' - ' + DateFormat("yyyy-MM-dd").format(DateTime.now().add(Duration(days: _weeklDate())))),
+                        nd == 0
+                            ? Text(_displayDate(0) + ' - ' + _displayDate(1))
+                            : Text(pHolder + ' - ' + nHolder),
+                        IconButton(
+                            icon: Icon(Icons.arrow_forward),
+                            onPressed: () {
+                              setState(() {
+                                pHolder = _displayDate(4);
+                                nHolder = _displayDate(5);
+                                // weekList.clear();
+                                // setWeek(pHolder, nHolder, itemList);
+                              });
+                            }),
+                      ],
+                    );
+                  },
+                  listener: (BuildContext context, itemList) {
+                    return null;
+                  },
                 ),
                 Container(
                   child: Card(
@@ -471,7 +543,7 @@ class BarChart extends StatelessWidget {
           child: ChartList(itemList, nHolder, pHolder),
         );
       },
-      listener: (BuildContext context, categoryList) {
+      listener: (BuildContext context, itemList) {
         return null;
       },
     );
@@ -515,29 +587,36 @@ class ChartList extends StatelessWidget {
       DateTime week = DateTime.now().add(Duration(days: index - _dayDate(day)));
       double examm = 0.0;
       DateTime exdate;
-      int id;
+      int id = 0;
       for (int i = 0; i < itemList.length; i++) {
-        exdate = DateFormat('yMd').parse(itemList[i].date);
+        exdate = DateFormat('yyyy-MM-dd').parse(itemList[i].date);
         if (week.day == exdate.day &&
             week.month == exdate.month &&
             week.year == exdate.year) {
-          examm += itemList[i].amount;
-          id = itemList[i].id;
-           print(itemList[i].date);
+          if ((DateTime.parse(itemList[i].date + " 00:00:00")
+                  .isAfter(DateTime.parse(pHolder))) &&
+              (DateTime.parse(itemList[i].date)
+                  .isBefore(DateTime.parse(nHolder)))) {
+            examm += itemList[i].amount;
+            id = i;
+            print(itemList[i].date);
+            print(itemList[i].amount);
+          }
         }
       }
-     
+
       return {'day': DateFormat.E().format(week), 'amount': examm, 'id': id};
     });
   }
 
   double get totalDaySpend {
     return days.fold(0.0, (sum, item) {
+      print((sum + item['amount']).toString() + "TOTAL");
       return sum + item['amount'];
     });
   }
- 
-//  DateFormat.yMd().format(prev.add(Duration(days: _weeklDate())));
+
+//  DateFormat("yyyy-MM-dd").format(prev.add(Duration(days: _weeklDate())));
 //         nxt = prev.add(Duration(days: _weekfDate()));
   @override
   Widget build(BuildContext context) {
@@ -545,12 +624,14 @@ class ChartList extends StatelessWidget {
     // DateFormat.yMMMMd().format(picked);
     return Column(
       children: [
-        Text(nHolder),
-        Text(pHolder),
+        // Text(nHolder),
+        // Text(pHolder),
         //Text(itemList[1].date),
         Card(
           child: Row(
             children: days.map((index) {
+              // print(index['day']);
+              // print(index['amount']);
               return Expanded(
                 child: Column(
                   children: [
@@ -561,17 +642,20 @@ class ChartList extends StatelessWidget {
                             ? 0.0
                             : (index['amount'] as double) / totalDaySpend
 
+                        //if (DateTime.parse(itemList[o].date + " 00:00:00")
+                        //               .isAfter(DateTime.parse(pHolder + " 00:00:00")) &&
+                        //           DateTime.parse(itemList[o].date + " 00:00:00")
+                        //               .isBefore(DateTime.parse(nHolder + " 00:00:00"))) {
+                        //         week.amount += itemList[o].amount;
                         // percent: totalDaySpend == 0
                         //     ? 0.0
-                        //     : ((DateFormat('dMy').parse(itemList[index['id']].date).isAfter(
-                        //                         DateFormat('dMy')
-                        //                             .parse(pHolder))) &&
-                        //                 (DateFormat('dMy')
-                        //                     .parse(itemList[index['id']].date)
-                        //                     .isBefore(DateFormat('dMy')
-                        //                         .parse(nHolder))) )
+                        //     : ((DateTime.parse(itemList[index['id']].date +
+                        //                     " 00:00:00")
+                        //                 .isAfter(DateTime.parse(pHolder))) &&
+                        //             (DateTime.parse(itemList[index['id']].date)
+                        //                 .isBefore(DateTime.parse(nHolder))))
                         //         ? (index['amount'] as double) / totalDaySpend
-                        //         : Container(),
+                        //         : (double.parse('0') as double) / totalDaySpend,
                         ),
                   ],
                 ),
