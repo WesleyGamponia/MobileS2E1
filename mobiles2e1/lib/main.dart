@@ -112,18 +112,18 @@ class _MyHomePageState extends State<MyHomePage> {
     String d = '';
     nd = 1;
     switch (n) {
-      case 0:
-        d = DateFormat("yyyy-MM-dd")
-            .format(prev.add(Duration(days: _weekfDate())));
-        break;
-      case 1:
-        d = DateFormat("yyyy-MM-dd")
-            .format(nxt.add(Duration(days: _weeklDate())));
-        break;
+      // case 0:
+      //   d = DateFormat("yyyy-MM-dd")
+      //       .format(prev.add(Duration(days: _weekfDate())));
+      //   break;
+      // case 1:
+      //   d = DateFormat("yyyy-MM-dd")
+      //       .format(nxt.add(Duration(days: _weeklDate())));
+      //   break;
       case 2:
         d = DateFormat("yyyy-MM-dd")
             .format(prev.add(Duration(days: _weekfDate() - 7)));
-        prev = prev.add(Duration(days: _weekfDate() - 1));
+        prev = prev.add(Duration(days: _weekfDate() - 7));
         pDate = prev;
         break;
       case 3:
@@ -134,7 +134,7 @@ class _MyHomePageState extends State<MyHomePage> {
       case 4:
         d = DateFormat("yyyy-MM-dd")
             .format(prev.add(Duration(days: _weekfDate() + 7)));
-        prev = prev.add(Duration(days: _weekfDate() + 13));
+        prev = prev.add(Duration(days: _weekfDate()+7));
         pDate = prev;
         break;
       case 5:
@@ -576,8 +576,8 @@ class ChartList extends StatelessWidget {
                       DateTime.parse(nHolder + " 00:00:00"))))) {
             examm += itemList[i].amount;
             id = i;
-            print(itemList[i].date);
-            print(itemList[i].amount);
+            // print(itemList[i].date);
+            // print(itemList[i].amount);
           }
         }
       }
@@ -588,7 +588,7 @@ class ChartList extends StatelessWidget {
 
   double get totalDaySpend {
     return days.fold(0.0, (sum, item) {
-      print((sum + item['amount']).toString() + "TOTAL");
+      //print((sum + item['amount']).toString() + "TOTAL");
       return sum + item['amount'];
     });
   }
