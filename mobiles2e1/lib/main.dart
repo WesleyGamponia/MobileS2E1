@@ -122,8 +122,8 @@ class _MyHomePageState extends State<MyHomePage> {
       //   break;
       case 2:
         d = DateFormat("yyyy-MM-dd")
-            .format(prev.add(Duration(days: _weekfDate() - 7)));
-        prev = prev.add(Duration(days: _weekfDate() - 7));
+            .format(prev.add(Duration(days: -7)));
+        prev = prev.add(Duration(days: -7));
         pDate = prev;
         break;
       case 3:
@@ -133,8 +133,8 @@ class _MyHomePageState extends State<MyHomePage> {
         break;
       case 4:
         d = DateFormat("yyyy-MM-dd")
-            .format(prev.add(Duration(days: _weekfDate() + 7)));
-        prev = prev.add(Duration(days: _weekfDate()+7));
+            .format(prev.add(Duration(days: 7)));
+        prev = prev.add(Duration(days:  7));
         pDate = prev;
         break;
       case 5:

@@ -19,9 +19,6 @@ class Cards extends StatefulWidget {
 }
 
 class _CardsState extends State<Cards> {
-  TextEditingController itemTitle = TextEditingController(text: '');
-  TextEditingController itemCost = TextEditingController(text: '');
-  @override
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -43,6 +40,8 @@ class _CardsState extends State<Cards> {
             padding: EdgeInsets.all(16),
             itemCount: itemList.length,
             itemBuilder: (context, index) {
+            TextEditingController itemTitle = TextEditingController(text: '${itemList[index].title}');
+            TextEditingController itemCost = TextEditingController(text: '${itemList[index].amount}');
               return (itemList[index].categoryID == widget.catID)
                   ? InkWell(
                       onTap: () {
@@ -72,8 +71,6 @@ class _CardsState extends State<Cards> {
                                                           10.0),
                                                     ),
                                                   ),
-                                                  hintText:
-                                                      '${itemList[index].title}',
                                                 ),
                                                 keyboardType:
                                                     TextInputType.text,
@@ -102,8 +99,6 @@ class _CardsState extends State<Cards> {
                                                           10.0),
                                                     ),
                                                   ),
-                                                  hintText:
-                                                      '${itemList[index].amount}',
                                                 ),
                                                 keyboardType:
                                                     TextInputType.number,
