@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobiles2e1/bloc/budget_bloc.dart';
 import 'package:mobiles2e1/bloc/item_bloc.dart';
@@ -40,8 +41,8 @@ class _CardsState extends State<Cards> {
             padding: EdgeInsets.all(16),
             itemCount: itemList.length,
             itemBuilder: (context, index) {
-            TextEditingController itemTitle = TextEditingController(text: '${itemList[index].title}');
-            TextEditingController itemCost = TextEditingController(text: '${itemList[index].amount}');
+              TextEditingController itemTitle = TextEditingController(text: '${itemList[index].title}');
+              TextEditingController itemCost = TextEditingController(text: '${itemList[index].amount}');
               return (itemList[index].categoryID == widget.catID)
                   ? InkWell(
                       onTap: () {
@@ -100,8 +101,10 @@ class _CardsState extends State<Cards> {
                                                     ),
                                                   ),
                                                 ),
-                                                keyboardType:
-                                                    TextInputType.number,
+                                                keyboardType: TextInputType.number,
+                                                inputFormatters: <TextInputFormatter>[
+                                                  FilteringTextInputFormatter.allow(RegExp(r'[0-9,.]')),
+                                                ],
                                                 controller: itemCost,
                                               ),
                                             ),
@@ -171,14 +174,16 @@ class _CardsState extends State<Cards> {
                                                         .add(UpdateItem(
                                                             index, item)));
                                                 Budget category1 = Budget(
-                                                  id: widget.category.id,
-                                                  amount: widget.category.amount,
-                                                  expense: widget.category.expense +
-                                                      double.parse(
-                                                          itemCost.text) -
-                                                      orgExpense,
-                                                  title: widget.category.title
-                                                );
+                                                    id: widget.category.id,
+                                                    amount:
+                                                        widget.category.amount,
+                                                    expense: widget
+                                                            .category.expense +
+                                                        double.parse(
+                                                            itemCost.text) -
+                                                        orgExpense,
+                                                    title:
+                                                        widget.category.title);
                                                 DBProvider.db
                                                     .updateCategory(category1)
                                                     .then((storedCategory) =>
@@ -206,22 +211,26 @@ class _CardsState extends State<Cards> {
                                             child: IconButton(
                                                 icon: Icon(Icons.delete),
                                                 onPressed: () {
-                                                   Budget category1 = Budget(
-                                                  id: widget.category.id,
-                                                  amount: widget.category.amount,
-                                                  expense: widget.category.expense - itemList[index].amount,
-                                                  title: widget.category.title
-                                                );
-                                                DBProvider.db
-                                                    .updateCategory(category1)
-                                                    .then((storedCategory) =>
-                                                        BlocProvider.of<
-                                                                    CategoryBloc>(
-                                                                context)
-                                                            .add(UpdateCategory(
-                                                                widget
-                                                                    .listIndex,
-                                                                category1)));
+                                                  Budget category1 = Budget(
+                                                      id: widget.category.id,
+                                                      amount: widget
+                                                          .category.amount,
+                                                      expense: widget.category
+                                                              .expense -
+                                                          itemList[index]
+                                                              .amount,
+                                                      title: widget
+                                                          .category.title);
+                                                  DBProvider.db
+                                                      .updateCategory(category1)
+                                                      .then((storedCategory) =>
+                                                          BlocProvider.of<
+                                                                      CategoryBloc>(
+                                                                  context)
+                                                              .add(UpdateCategory(
+                                                                  widget
+                                                                      .listIndex,
+                                                                  category1)));
                                                   DBProvider.db
                                                       .delete(
                                                           itemList[index].id)
