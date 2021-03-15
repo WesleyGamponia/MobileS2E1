@@ -105,9 +105,11 @@ class _CardsState extends State<Cards> {
                                                 ),
                                                 inputFormatters: <
                                                     TextInputFormatter>[
-                                                  FilteringTextInputFormatter.allow(RegExp(r"[0-9.]")),
+                                                  FilteringTextInputFormatter
+                                                      .allow(RegExp(r"[0-9.]")),
                                                 ],
-                                                keyboardType: TextInputType.numberWithOptions(
+                                                keyboardType: TextInputType
+                                                    .numberWithOptions(
                                                   decimal: true,
                                                   signed: false,
                                                 ),
@@ -161,48 +163,76 @@ class _CardsState extends State<Cards> {
                                               //UPDATE
                                               child: Text('Change'),
                                               onPressed: () {
-                                                double orgExpense =
-                                                    itemList[index]
-                                                        .amount; //old value
-                                                Item item = Item(
-                                                  amount: double.parse(
-                                                      itemCost.text),
-                                                  title: itemTitle.text,
-                                                  date: itemList[index].date,
-                                                  categoryID: itemList[index]
-                                                      .categoryID,
-                                                  id: itemList[index].id,
-                                                );
-                                                DBProvider.db.update(item).then(
-                                                    (storedItem) => BlocProvider
-                                                            .of<ItemBloc>(
-                                                                context)
-                                                        .add(UpdateItem(
-                                                            index, item)));
-                                                Budget category1 = Budget(
-                                                    id: widget.category.id,
-                                                    amount:
-                                                        widget.category.amount,
-                                                    expense: widget
-                                                            .category.expense +
-                                                        double.parse(
-                                                            itemCost.text) -
-                                                        orgExpense,
-                                                    title:
-                                                        widget.category.title);
-                                                DBProvider.db
-                                                    .updateCategory(category1)
-                                                    .then((storedCategory) =>
-                                                        BlocProvider.of<
-                                                                    CategoryBloc>(
-                                                                context)
-                                                            .add(UpdateCategory(
-                                                                widget
-                                                                    .listIndex,
-                                                                category1)));
-                                                itemTitle.text = "";
-                                                itemCost.text = "";
-                                                Navigator.pop(context);
+                                                if (int.parse(itemCost.text) ==
+                                                    0) {
+                                                  showDialog(
+                                                    context: context,
+                                                    builder:
+                                                        (BuildContext context) {
+                                                      return AlertDialog(
+                                                        title: Text('Error'),
+                                                        content: Text(
+                                                            'Please check your inputed cost'),
+                                                        actions: [
+                                                          FlatButton(
+                                                            child: Text('Ok'),
+                                                            onPressed: () {
+                                                              Navigator.of(
+                                                                      context)
+                                                                  .pop();
+                                                            },
+                                                          )
+                                                        ],
+                                                      );
+                                                    },
+                                                  );
+                                                } else {
+                                                  double orgExpense =
+                                                      itemList[index]
+                                                          .amount; //old value
+                                                  Item item = Item(
+                                                    amount: double.parse(
+                                                        itemCost.text),
+                                                    title: itemTitle.text,
+                                                    date: itemList[index].date,
+                                                    categoryID: itemList[index]
+                                                        .categoryID,
+                                                    id: itemList[index].id,
+                                                  );
+                                                  DBProvider.db
+                                                      .update(item)
+                                                      .then((storedItem) =>
+                                                          BlocProvider.of<
+                                                                      ItemBloc>(
+                                                                  context)
+                                                              .add(UpdateItem(
+                                                                  index,
+                                                                  item)));
+                                                  Budget category1 = Budget(
+                                                      id: widget.category.id,
+                                                      amount: widget
+                                                          .category.amount,
+                                                      expense: widget.category
+                                                              .expense +
+                                                          double.parse(
+                                                              itemCost.text) -
+                                                          orgExpense,
+                                                      title: widget
+                                                          .category.title);
+                                                  DBProvider.db
+                                                      .updateCategory(category1)
+                                                      .then((storedCategory) =>
+                                                          BlocProvider.of<
+                                                                      CategoryBloc>(
+                                                                  context)
+                                                              .add(UpdateCategory(
+                                                                  widget
+                                                                      .listIndex,
+                                                                  category1)));
+                                                  itemTitle.text = "";
+                                                  itemCost.text = "";
+                                                  Navigator.pop(context);
+                                                }
                                               },
                                             ),
                                           ),

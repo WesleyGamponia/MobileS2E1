@@ -121,8 +121,7 @@ class _MyHomePageState extends State<MyHomePage> {
       //       .format(nxt.add(Duration(days: _weeklDate())));
       //   break;
       case 2:
-        d = DateFormat("yyyy-MM-dd")
-            .format(prev.add(Duration(days: -7)));
+        d = DateFormat("yyyy-MM-dd").format(prev.add(Duration(days: -7)));
         prev = prev.add(Duration(days: -7));
         pDate = prev;
         break;
@@ -132,9 +131,8 @@ class _MyHomePageState extends State<MyHomePage> {
         nxt = prev.add(Duration(days: _weekfDate()));
         break;
       case 4:
-        d = DateFormat("yyyy-MM-dd")
-            .format(prev.add(Duration(days: 7)));
-        prev = prev.add(Duration(days:  7));
+        d = DateFormat("yyyy-MM-dd").format(prev.add(Duration(days: 7)));
+        prev = prev.add(Duration(days: 7));
         pDate = prev;
         break;
       case 5:
@@ -194,6 +192,14 @@ class _MyHomePageState extends State<MyHomePage> {
         break;
     }
     return n;
+  }
+
+  int checkAmount(String budget) {
+    int n = int.parse(budget);
+    if (n == 0) {
+      return 0;
+    }
+    return 1;
   }
 
   @override
@@ -279,22 +285,43 @@ class _MyHomePageState extends State<MyHomePage> {
                             child: FlatButton(
                                 child: Text('ADD'),
                                 onPressed: () {
-                                  Budget category = Budget(
-                                    title: categoryName.text,
-                                    amount: double.parse(categoryBudget.text),
-                                    expense: 0,
-                                  );
-                                  DBProvider.db.insertCategory(category).then(
-                                        (storedCategory) =>
-                                            BlocProvider.of<CategoryBloc>(
-                                                    context)
-                                                .add(
-                                          AddCategory(storedCategory),
-                                        ),
-                                      );
-                                  categoryBudget.text = '';
-                                  categoryName.text = '';
-                                  Navigator.pop(context);
+                                  if (int.parse(categoryBudget.text)==0){
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          title: Text('Error'),
+                                          content: Text(
+                                              'Please check your inputed budget'),
+                                          actions: [
+                                            FlatButton(
+                                              child: Text('Ok'),
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                            )
+                                          ],
+                                        );
+                                      },
+                                    );
+                                  } else {
+                                    Budget category = Budget(
+                                      title: categoryName.text,
+                                      amount: double.parse(categoryBudget.text),
+                                      expense: 0,
+                                    );
+                                    DBProvider.db.insertCategory(category).then(
+                                          (storedCategory) =>
+                                              BlocProvider.of<CategoryBloc>(
+                                                      context)
+                                                  .add(
+                                            AddCategory(storedCategory),
+                                          ),
+                                        );
+                                    categoryBudget.text = '';
+                                    categoryName.text = '';
+                                    Navigator.pop(context);
+                                  }
                                 }),
                           ),
                         ),
