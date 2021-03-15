@@ -41,8 +41,10 @@ class _CardsState extends State<Cards> {
             padding: EdgeInsets.all(16),
             itemCount: itemList.length,
             itemBuilder: (context, index) {
-              TextEditingController itemTitle = TextEditingController(text: '${itemList[index].title}');
-              TextEditingController itemCost = TextEditingController(text: '${itemList[index].amount}');
+              TextEditingController itemTitle =
+                  TextEditingController(text: '${itemList[index].title}');
+              TextEditingController itemCost =
+                  TextEditingController(text: '${itemList[index].amount}');
               return (itemList[index].categoryID == widget.catID)
                   ? InkWell(
                       onTap: () {
@@ -101,10 +103,14 @@ class _CardsState extends State<Cards> {
                                                     ),
                                                   ),
                                                 ),
-                                                keyboardType: TextInputType.number,
-                                                inputFormatters: <TextInputFormatter>[
-                                                  FilteringTextInputFormatter.allow(RegExp(r'[0-9,.]')),
+                                                inputFormatters: <
+                                                    TextInputFormatter>[
+                                                  FilteringTextInputFormatter.allow(RegExp(r"[0-9.]")),
                                                 ],
+                                                keyboardType: TextInputType.numberWithOptions(
+                                                  decimal: true,
+                                                  signed: false,
+                                                ),
                                                 controller: itemCost,
                                               ),
                                             ),

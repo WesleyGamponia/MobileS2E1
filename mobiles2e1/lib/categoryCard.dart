@@ -109,10 +109,10 @@ class _CategoryCardState extends State<CategoryCard> {
                                       ),
                                       hintText: 'Enter Expense Cost',
                                     ),
-                                    keyboardType: TextInputType.number,
+                                    keyboardType: TextInputType.numberWithOptions(decimal: true),
                                     inputFormatters: <TextInputFormatter>[
                                       FilteringTextInputFormatter.allow(
-                                          RegExp(r'[0-9,]')),
+                                          RegExp(r'[0-9.]')),
                                     ],
                                     controller: itemCost,
                                   ),
