@@ -175,7 +175,27 @@ class _CategoryCardState extends State<CategoryCard> {
                               child: FlatButton(
                                 child: Text('ADD'),
                                 onPressed: () {
-                                  Item item = Item(
+                                  if(int.parse(itemCost.text)==0){
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          title: Text('Error'),
+                                          content: Text(
+                                              'Please check your inputed cost'),
+                                          actions: [
+                                            FlatButton(
+                                              child: Text('Ok'),
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                            )
+                                          ],
+                                        );
+                                      },
+                                    );
+                                  }else{
+                                    Item item = Item(
                                     title: itemTitle.text, //name
                                     amount:
                                         double.parse(itemCost.text), //expense
@@ -210,7 +230,8 @@ class _CategoryCardState extends State<CategoryCard> {
                                   itemCost.text = "";
                                   itemDate.text = "";
                                   Navigator.pop(context);
-                                  if (categoryList[widget.listIndex].expense >
+                                  if (categoryList[widget.listIndex].expense +
+                                            double.parse(itemCost.text) >
                                       categoryList[widget.listIndex].amount) {
                                     showDialog(
                                         context: context,
@@ -249,6 +270,7 @@ class _CategoryCardState extends State<CategoryCard> {
                                         );
                                       },
                                     );
+                                  }
                                   }
                                 },
                               ),
